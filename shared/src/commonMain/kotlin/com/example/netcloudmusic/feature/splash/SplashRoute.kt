@@ -12,15 +12,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.netcloudmusic.util.SuperDateUtil
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.splash_banner
@@ -39,28 +39,24 @@ fun SplashRoute(
     toGuide: () -> Unit,
     toMain: () -> Unit
 ) {
-    var timeLeft by remember { mutableStateOf(3L) }
-    var hasNavigated by remember { mutableStateOf(false) }
-
-    fun navigateToMainOnce() {
-        if (!hasNavigated) {
-            hasNavigated = true
-            toMain()
+    // 另外为 viewModel() 提供了显式 factory，避免 iOS 使用默认反射工厂时出现 Factory.create(...) is not implemented 崩溃。
+    // not implemented on iOS/Native.
+    val viewModel: SplashViewmodel = viewModel(
+        factory = viewModelFactory {
+            initializer { SplashViewmodel() }
         }
-    }
+    )
+    val timeLeft by viewModel.timeLeft.collectAsState()
+    val navigateToMain by viewModel.navigateToMain.collectAsState()
 
-    LaunchedEffect(Unit) {
-        repeat(3) { second ->
-            timeLeft = 3L - second
-            delay(1000)
-        }
-        navigateToMainOnce()
+    LaunchedEffect(navigateToMain) {
+        if (navigateToMain) toMain()
     }
 
     SplashScreen(
         toGuide = toGuide,
         timeLeft = timeLeft,
-        onSkipClick = ::navigateToMainOnce,
+        onSkipClick = viewModel::onSkipClick,
         toMain = toMain
     )
 }
