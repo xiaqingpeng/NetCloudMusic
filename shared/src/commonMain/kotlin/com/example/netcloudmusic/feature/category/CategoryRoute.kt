@@ -6,6 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import netcloudmusic.shared.generated.resources.Res
+import netcloudmusic.shared.generated.resources.category_screen
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 分类界面
@@ -21,6 +24,6 @@ fun CategoryScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("分类界面")
+        Text(stringResource(Res.string.category_screen))
     }
 }

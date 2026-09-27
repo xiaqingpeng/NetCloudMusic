@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.netcloudmusic.feature.main.navigation.TopLevelDestination
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 底部导航栏
@@ -55,11 +56,11 @@ fun MyNavigationBar(
                     painter = painterResource(
                         if (selected) destination.selectedIcon else destination.unselectedIcon
                     ),
-                    contentDescription = destination.title,
+                    contentDescription = stringResource(destination.title),
                     modifier = Modifier.size(25.dp)
                 )
                 Text(
-                    text = destination.title,
+                    text = stringResource(destination.title),
                     style = MaterialTheme.typography.bodySmall,
                     color = color
                 )

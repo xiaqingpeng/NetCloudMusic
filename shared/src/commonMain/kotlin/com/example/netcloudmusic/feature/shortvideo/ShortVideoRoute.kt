@@ -6,6 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import netcloudmusic.shared.generated.resources.Res
+import netcloudmusic.shared.generated.resources.short_video_screen
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 短视频界面
@@ -21,6 +24,6 @@ fun ShortVideoScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("短视频界面")
+        Text(stringResource(Res.string.short_video_screen))
     }
 }

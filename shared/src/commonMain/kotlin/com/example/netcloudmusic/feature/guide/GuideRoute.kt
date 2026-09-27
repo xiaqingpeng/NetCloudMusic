@@ -7,6 +7,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import netcloudmusic.shared.generated.resources.Res
+import netcloudmusic.shared.generated.resources.guide
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 引导界面
@@ -32,7 +35,7 @@ fun GuideScreen(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            "引导界面",
+            stringResource(Res.string.guide),
             modifier = Modifier.clickable { toMain() }
         )
     }

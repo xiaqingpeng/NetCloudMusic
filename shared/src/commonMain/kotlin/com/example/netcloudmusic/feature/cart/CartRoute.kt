@@ -6,6 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import netcloudmusic.shared.generated.resources.Res
+import netcloudmusic.shared.generated.resources.cart_screen
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 购物车界面
@@ -21,6 +24,6 @@ fun CartScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("购物车界面")
+        Text(stringResource(Res.string.cart_screen))
     }
 }

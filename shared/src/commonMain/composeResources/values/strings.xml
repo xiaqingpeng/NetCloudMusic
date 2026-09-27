@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">云商城</string>
-    <string name="copyright">Copyright © %1$d Ixuea. All Rights Reserved</string>
+    <string name="copyright">© %1$d 今日头条</string>
+    <string name="splash_banner_description">看见更大的世界</string>
+    <string name="splash_logo_description">头条今日头条</string>
+    <string name="skip_seconds">跳过%1$ds</string>
+    <string name="guide">引导界面</string>
+    <string name="home">首页</string>
+    <string name="video">视频</string>
+    <string name="category">分类</string>
+    <string name="cart">购物车</string>
+    <string name="me">我的</string>
+    <string name="discovery_screen">发现界面</string>
+    <string name="short_video_screen">短视频界面</string>
+    <string name="category_screen">分类界面</string>
+    <string name="cart_screen">购物车界面</string>
+    <string name="me_screen">我的界面</string>
 </resources>

@@ -25,6 +25,11 @@ import org.jetbrains.compose.resources.painterResource
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.splash_banner
 import netcloudmusic.shared.generated.resources.splash_logo
+import netcloudmusic.shared.generated.resources.skip_seconds
+import netcloudmusic.shared.generated.resources.copyright
+import netcloudmusic.shared.generated.resources.splash_banner_description
+import netcloudmusic.shared.generated.resources.splash_logo_description
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * 启动界面
@@ -75,7 +80,7 @@ fun SplashScreen(
         // 启动界面 Banner
         Image(
             painter = painterResource(Res.drawable.splash_banner),
-            contentDescription = "看见更大的世界",
+            contentDescription = stringResource(Res.string.splash_banner_description),
             modifier = Modifier
                 .padding(top = 150.dp)
                 .align(Alignment.TopCenter)
@@ -84,7 +89,7 @@ fun SplashScreen(
         // 启动 Logo
         Image(
             painter = painterResource(Res.drawable.splash_logo),
-            contentDescription = "头条今日头条",
+            contentDescription = stringResource(Res.string.splash_logo_description),
             modifier = Modifier
                 .padding(bottom = 60.dp)
                 .align(Alignment.BottomCenter)
@@ -92,7 +97,10 @@ fun SplashScreen(
 
         // 版权文本
         Text(
-            text = "© ${SuperDateUtil.currentYear()} 今日头条",
+            text = stringResource(
+                Res.string.copyright,
+                SuperDateUtil.currentYear()
+            ),
             style = MaterialTheme.typography.bodySmall.copy(
                 color = MaterialTheme.colorScheme.outline
             ),
@@ -114,7 +122,7 @@ fun SplashScreen(
                 .align(Alignment.TopEnd)
                 .padding(top = 48.dp, end = 16.dp)
         ) {
-            Text("跳过${timeLeft}s")
+            Text(stringResource(Res.string.skip_seconds, timeLeft))
         }
     }
 }

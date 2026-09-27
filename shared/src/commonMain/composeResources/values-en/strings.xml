@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CloudMall</string>
+    <string name="copyright">© %1$d Toutiao</string>
+    <string name="splash_banner_description">See a bigger world</string>
+    <string name="splash_logo_description">Today's Headlines</string>
+    <string name="skip_seconds">Skip %1$ds</string>
+    <string name="guide">Guide</string>
+    <string name="home">Home</string>
+    <string name="video">Video</string>
+    <string name="category">Category</string>
+    <string name="cart">Cart</string>
+    <string name="me">Me</string>
+    <string name="discovery_screen">Discovery</string>
+    <string name="short_video_screen">Short Video</string>
+    <string name="category_screen">Category</string>
+    <string name="cart_screen">Cart</string>
+    <string name="me_screen">Me</string>
+</resources>
