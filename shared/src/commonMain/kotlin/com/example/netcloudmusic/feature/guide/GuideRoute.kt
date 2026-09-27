@@ -13,21 +13,27 @@ import androidx.compose.ui.Modifier
  */
 @Composable
 fun GuideRoute(
-    toBack: () -> Unit
+    toBack: () -> Unit,
+    toMain: () -> Unit = {}
 ) {
     GuideScreen(
-        toBack = toBack
+        toBack = toBack,
+        toMain = toMain
     )
 }
 
 @Composable
 fun GuideScreen(
-    toBack: () -> Unit = {}
+    toBack: () -> Unit = {},
+    toMain: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("引导界面", modifier = Modifier.clickable { toBack() })
+        Text(
+            "引导界面",
+            modifier = Modifier.clickable { toMain() }
+        )
     }
 }

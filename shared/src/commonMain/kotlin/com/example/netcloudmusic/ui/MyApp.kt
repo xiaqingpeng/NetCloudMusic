@@ -1,11 +1,17 @@
 package com.example.netcloudmusic.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.netcloudmusic.feature.guide.GuideScreen
-import com.example.netcloudmusic.feature.splash.SplashRoute
+import com.example.netcloudmusic.feature.guide.navigation.guideScreen
+import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
+import com.example.netcloudmusic.feature.main.navigation.MAIN_ROUTE
+import com.example.netcloudmusic.feature.main.navigation.mainScreen
+import com.example.netcloudmusic.feature.main.navigation.navigateToMain
+import com.example.netcloudmusic.feature.splash.navigation.SPLASH_ROUTE
+import com.example.netcloudmusic.feature.splash.navigation.splashScreen
 import com.example.netcloudmusic.ui.theme.AppTheme
 
 @Composable
@@ -15,22 +21,23 @@ fun MyApp() {
 
         NavHost(
             navController = navController,
-            startDestination = "splash"
+            startDestination = SPLASH_ROUTE,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) {
-            composable("splash") {
-                SplashRoute(
-                    toGuide = {
-                        navController.navigate("guide")
-                    }
-                )
-            }
-            composable("guide") {
-                GuideScreen(
-                    toBack = {
-                        navController.popBackStack()
-                    }
-                )
-            }
+            splashScreen(
+                toGuide = navController::navigateToGuide,
+                toMain = navController::navigateToMain
+            )
+
+            guideScreen(
+                toBack = navController::popBackStack,
+                toMain = navController::navigateToMain
+            )
+
+            mainScreen()
         }
     }
 }
