@@ -16,4 +16,5 @@
     <string name="category_screen">分类界面</string>
     <string name="cart_screen">购物车界面</string>
     <string name="me_screen">我的界面</string>
+    <string name="search_tip">搜索 爱学啊</string>
 </resources>
