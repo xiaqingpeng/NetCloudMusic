@@ -1,5 +1,6 @@
 package com.example.netcloudmusic.core.design.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.netcloudmusic.core.design.theme.SpaceExtraMedium
+import com.example.netcloudmusic.core.design.theme.SpaceSmallHeight
 import com.example.netcloudmusic.feature.main.navigation.TopLevelDestination
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -50,15 +53,16 @@ fun MyNavigationBar(
                     .clickable {
                         onNavigateToDestination(index)
                     }
-                    .padding(7.dp)
+                    .padding(vertical = SpaceExtraMedium)
             ) {
-                androidx.compose.foundation.Image(
+                Image(
                     painter = painterResource(
                         if (selected) destination.selectedIcon else destination.unselectedIcon
                     ),
-                    contentDescription = stringResource(destination.title),
+                    contentDescription = null,
                     modifier = Modifier.size(25.dp)
                 )
+                SpaceSmallHeight()
                 Text(
                     text = stringResource(destination.title),
                     style = MaterialTheme.typography.bodySmall,

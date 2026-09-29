@@ -17,4 +17,7 @@
     <string name="cart_screen">购物车界面</string>
     <string name="me_screen">我的界面</string>
     <string name="search_tip">搜索 爱学啊</string>
+
+    <string name="price">￥%1$s</string>
+    <string name="product_item_info">%1$s条评论 %2$s%%好评</string>
 </resources>

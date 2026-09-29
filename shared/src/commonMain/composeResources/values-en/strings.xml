@@ -17,4 +17,6 @@
     <string name="cart_screen">Cart</string>
     <string name="me_screen">Me</string>
     <string name="search_tip">Search Ixuea</string>
+    <string name="price">¥%1$s</string>
+    <string name="product_item_info">%1$s comments %2$s%% positive feedback</string>
 </resources>

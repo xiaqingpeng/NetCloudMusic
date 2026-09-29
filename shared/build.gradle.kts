@@ -43,6 +43,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+            implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.3")
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -55,6 +56,13 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.navigation.runtime)
             implementation(libs.navigation.common)
+
+            //图片加载框架
+            //https://github.com/coil-kt/coil
+            implementation("io.coil-kt.coil3:coil-compose:3.6.3")
+
+            //商品 JSON 数据解析
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
