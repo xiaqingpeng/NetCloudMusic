@@ -26,7 +26,9 @@ import com.example.netcloudmusic.core.design.theme.SpaceExtraMedium
 import com.example.netcloudmusic.core.design.theme.SpaceMedium
 import com.example.netcloudmusic.core.design.theme.SpaceSmallHeight
 import com.example.netcloudmusic.core.design.theme.SpaceSmallWidth
+import com.example.netcloudmusic.core.config.Config
 import com.example.netcloudmusic.core.model.Product
+import com.example.netcloudmusic.util.ResourceUtil
 import com.example.netcloudmusic.util.StringUtil
 import org.jetbrains.compose.resources.stringResource
 
@@ -113,9 +115,15 @@ fun ItemProduct(
 
 @Composable
 private fun ItemProductImage(data : Product) {
+
+
+
     if (data.icon != null)
+
+
+
         AsyncImage(
-            model = data.icon ,
+            model = ResourceUtil.r(data.icon),
             contentDescription = null ,
             contentScale = ContentScale.Crop ,
             modifier = Modifier

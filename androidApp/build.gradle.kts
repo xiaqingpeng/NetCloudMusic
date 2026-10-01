@@ -30,6 +30,35 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    flavorDimensions += listOf("env", "channel")
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            buildConfigField("String", "ENDPOINT", "\"https://quick-server-sp.ixuea.com/\"")
+            buildConfigField(
+                "String",
+                "RESOURCE_ENDPOINT",
+                "\"https://rs.ixuea.com/quick/%s\""
+            )
+        }
+        create("local") {
+            dimension = "env"
+            buildConfigField("String", "ENDPOINT", "\"http://192.168.2.100:8080/\"")
+            buildConfigField(
+                "String",
+                "RESOURCE_ENDPOINT",
+                "\"https://rs.ixuea.com/quick/%s\""
+            )
+        }
+        create("default") {
+            dimension = "channel"
+            versionNameSuffix = ".default"
+        }
+        create("play") {
+            dimension = "channel"
+            versionNameSuffix = "-play"
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -50,5 +79,6 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
