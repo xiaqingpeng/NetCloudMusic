@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 /**
  * 启动界面vm
  */
-class SplashViewmodel : ViewModel() {
+class SplashViewModel : ViewModel() {
 
     private var timerJob: Job? = null
 

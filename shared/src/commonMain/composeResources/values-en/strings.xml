@@ -19,4 +19,7 @@
     <string name="search_tip">Search Ixuea</string>
     <string name="price">¥%1$s</string>
     <string name="product_item_info">%1$s comments %2$s%% positive feedback</string>
+    <string name="loading">Loading…</string>
+    <string name="error_load">Load failed</string>
+    <string name="click_retry">Click to retry</string>
 </resources>

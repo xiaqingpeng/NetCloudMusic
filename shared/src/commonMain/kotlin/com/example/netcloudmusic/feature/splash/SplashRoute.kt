@@ -42,9 +42,9 @@ fun SplashRoute(
 ) {
     // 另外为 viewModel() 提供了显式 factory，避免 iOS 使用默认反射工厂时出现 Factory.create(...) is not implemented 崩溃。
     // not implemented on iOS/Native.
-    val viewModel: SplashViewmodel = viewModel(
+    val viewModel: SplashViewModel = viewModel(
         factory = viewModelFactory {
-            initializer { SplashViewmodel() }
+            initializer { SplashViewModel() }
         }
     )
     val timeLeft by viewModel.timeLeft.collectAsState()

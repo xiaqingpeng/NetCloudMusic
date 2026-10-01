@@ -20,4 +20,7 @@
 
     <string name="price">￥%1$s</string>
     <string name="product_item_info">%1$s条评论 %2$s%%好评</string>
+    <string name="loading">加载中…</string>
+    <string name="error_load">加载失败</string>
+    <string name="click_retry">点击重试</string>
 </resources>
