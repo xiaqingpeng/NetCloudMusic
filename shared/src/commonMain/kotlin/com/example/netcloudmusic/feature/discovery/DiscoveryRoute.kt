@@ -60,7 +60,7 @@ import org.jetbrains.compose.resources.stringResource
  * 发现界面
  */
 @Composable
-fun DiscoveryRoute() {
+fun DiscoveryRoute(toProductDetail: (String) -> Unit = {}) {
     val viewModel: DiscoveryViewModel = viewModel(
         factory = viewModelFactory {
             initializer { DiscoveryViewModel() }
@@ -73,6 +73,7 @@ fun DiscoveryRoute() {
         loadState = uiState.loadState,
         errorMessage = uiState.errorMessage,
         onRetry = viewModel::reload,
+        toProductDetail = toProductDetail,
     )
 }
 
@@ -83,6 +84,7 @@ fun DiscoveryScreen(
     loadState: Int = 0,
     errorMessage: String? = null,
     onRetry: () -> Unit = {},
+    toProductDetail: (String) -> Unit = {},
     toggleDrawer : () -> Unit = {} ,
     toSearch : () -> Unit = {}
 ) {
@@ -113,7 +115,7 @@ fun DiscoveryScreen(
                 ) {
                     items(products) { product ->
                         ItemProduct(
-                            modifier = Modifier,
+                            modifier = Modifier.clickable { toProductDetail(product.id) },
                             data = product
                         )
                     }

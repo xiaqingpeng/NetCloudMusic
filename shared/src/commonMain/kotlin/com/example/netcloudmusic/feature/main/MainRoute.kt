@@ -29,12 +29,12 @@ import kotlinx.coroutines.launch
  * 主界面
  */
 @Composable
-fun MainRoute() {
-    MainScreen()
+fun MainRoute(toProductDetail: (String) -> Unit = {}) {
+    MainScreen(toProductDetail)
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(toProductDetail: (String) -> Unit = {}) {
     /**
      * 当前界面选中的route
      */
@@ -58,7 +58,7 @@ fun MainScreen() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        MainContent(modifier = Modifier.weight(1f), pagerState = pagerState)
+        MainContent(modifier = Modifier.weight(1f), pagerState = pagerState, toProductDetail = toProductDetail)
         MyNavigationBar(
             modifier = Modifier,
             destinations = TopLevelDestination.entries.toList(),
@@ -76,14 +76,15 @@ fun MainScreen() {
 @Composable
 fun MainContent(
     modifier: Modifier,
-    pagerState: PagerState
+    pagerState: PagerState,
+    toProductDetail: (String) -> Unit = {},
 ) {
     HorizontalPager(
         state = pagerState,
         modifier = modifier.fillMaxWidth(),
     ) {
         when (it) {
-            0 -> DiscoveryRoute()
+            0 -> DiscoveryRoute(toProductDetail)
             1 -> ShortVideoRoute()
             2 -> CategoryRoute()
             3 -> CartRoute()

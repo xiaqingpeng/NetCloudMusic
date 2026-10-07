@@ -21,8 +21,10 @@ fun NavController.navigateToMain() {
 /**
  * 配置导航
  */
-fun NavGraphBuilder.mainScreen() {
+fun NavGraphBuilder.mainScreen(
+    toProductDetail: (String) -> Unit = {},
+) {
     myComposable(route = MAIN_ROUTE) {
-        MainRoute()
+        MainRoute(toProductDetail)
     }
 }

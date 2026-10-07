@@ -17,5 +17,7 @@ interface NetworkDataSource {
         page: String? = null,
     ): NetworkResponse<NetworkPageData<Product>>
 
+    suspend fun productDetail(id: String): NetworkResponse<Product>
+
     suspend fun login(data: User): NetworkResponse<Session>
 }

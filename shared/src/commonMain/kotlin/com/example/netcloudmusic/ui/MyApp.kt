@@ -13,6 +13,10 @@ import com.example.netcloudmusic.feature.guide.navigation.guideScreen
 import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
 import com.example.netcloudmusic.feature.main.navigation.mainScreen
 import com.example.netcloudmusic.feature.main.navigation.navigateToMain
+import com.example.netcloudmusic.feature.cart.navigation.cartScreen
+import com.example.netcloudmusic.feature.cart.navigation.navigateToCart
+import com.example.netcloudmusic.feature.productdetail.navigation.navigateToProductDetail
+import com.example.netcloudmusic.feature.productdetail.navigation.productDetailScreen
 import com.example.netcloudmusic.feature.splash.navigation.SPLASH_ROUTE
 import com.example.netcloudmusic.feature.splash.navigation.splashScreen
 import com.example.netcloudmusic.ui.theme.AppTheme
@@ -48,7 +52,12 @@ fun MyApp() {
                 toMain = navController::navigateToMain
             )
 
-            mainScreen()
+            mainScreen(toProductDetail = navController::navigateToProductDetail)
+            productDetailScreen(
+                toBack = { navController.popBackStack() },
+                onCartClick = navController::navigateToCart,
+            )
+            cartScreen()
         }
     }
 }

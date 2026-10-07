@@ -33,6 +33,12 @@ class KtorNetworkDataSource(
         }.body()
     }
 
+    override suspend fun productDetail(id: String): NetworkResponse<Product> {
+        return httpClient.get("${Config.ENDPOINT}v1/products/info") {
+            parameter("id", id)
+        }.body()
+    }
+
     override suspend fun login(data: User): NetworkResponse<Session> {
         return httpClient.post("${Config.ENDPOINT}v1/login") {
             setBody(data)
