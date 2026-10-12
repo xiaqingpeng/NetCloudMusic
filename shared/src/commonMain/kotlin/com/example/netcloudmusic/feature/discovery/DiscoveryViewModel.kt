@@ -2,16 +2,16 @@ package com.example.netcloudmusic.feature.discovery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.netcloudmusic.core.network.KtorNetworkDataSource
+import com.example.netcloudmusic.core.data.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DiscoveryViewModel : ViewModel() {
-
-    private val networkDataSource = KtorNetworkDataSource()
+class DiscoveryViewModel(
+    private val productRepository: ProductRepository,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
@@ -36,7 +36,7 @@ class DiscoveryViewModel : ViewModel() {
             }
 
             try {
-                val resp = networkDataSource.products(
+                val resp = productRepository.products(
                     app = app,
                     query = query,
                     size = size,

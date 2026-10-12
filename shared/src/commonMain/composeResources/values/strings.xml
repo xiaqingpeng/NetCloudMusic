@@ -16,6 +16,27 @@
     <string name="category_screen">分类界面</string>
     <string name="cart_screen">购物车界面</string>
     <string name="me_screen">我的界面</string>
+    <string name="login_or_register">登录或注册</string>
+    <string name="logout">退出登录</string>
+    <string name="me_friend">关注</string>
+    <string name="me_fans">粉丝</string>
+    <string name="me_login_tip">登录后享受更多服务</string>
+    <string name="unknown_user">未知用户</string>
+    <string name="phone_or_email">手机号或邮箱</string>
+    <string name="enter_phone_or_email">请输入手机号或邮箱</string>
+    <string name="password">用户密码</string>
+    <string name="enter_password">请输入密码</string>
+    <string name="login">登录</string>
+    <string name="login_error">登录失败</string>
+    <string name="confirm">确定</string>
+    <string name="register">立即注册</string>
+    <string name="forgot_password">忘记密码</string>
+    <string name="code_login">验证码登录</string>
+    <string name="username_login">用户名和密码登录</string>
+    <string name="user_agreement_start">登录即表示你同意</string>
+    <string name="user_agreement">《用户协议》</string>
+    <string name="user_agreement_and">和</string>
+    <string name="user_agreement_privacy_policy">《隐私政策》</string>
     <string name="search_tip">搜索 爱学啊</string>
 
     <string name="price">￥%1$s</string>

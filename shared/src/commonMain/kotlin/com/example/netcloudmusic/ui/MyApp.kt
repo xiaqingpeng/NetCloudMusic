@@ -13,6 +13,11 @@ import com.example.netcloudmusic.feature.guide.navigation.guideScreen
 import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
 import com.example.netcloudmusic.feature.main.navigation.mainScreen
 import com.example.netcloudmusic.feature.main.navigation.navigateToMain
+import com.example.netcloudmusic.feature.login.navigation.finishLogin
+import com.example.netcloudmusic.feature.login.navigation.loginScreen
+import com.example.netcloudmusic.feature.login.navigation.navigateToLogin
+import com.example.netcloudmusic.feature.loginhome.navigation.loginHomeScreen
+import com.example.netcloudmusic.feature.loginhome.navigation.navigateToLoginHome
 import com.example.netcloudmusic.feature.cart.navigation.cartScreen
 import com.example.netcloudmusic.feature.cart.navigation.navigateToCart
 import com.example.netcloudmusic.feature.productdetail.navigation.navigateToProductDetail
@@ -52,7 +57,18 @@ fun MyApp() {
                 toMain = navController::navigateToMain
             )
 
-            mainScreen(toProductDetail = navController::navigateToProductDetail)
+            mainScreen(
+                toProductDetail = navController::navigateToProductDetail,
+                toLogin = navController::navigateToLoginHome,
+            )
+            loginHomeScreen(
+                toBack = { navController.popBackStack() },
+                toLogin = navController::navigateToLogin,
+            )
+            loginScreen(
+                toBack = { navController.popBackStack() },
+                finishAllLoginPages = navController::finishLogin,
+            )
             productDetailScreen(
                 toBack = { navController.popBackStack() },
                 onCartClick = navController::navigateToCart,

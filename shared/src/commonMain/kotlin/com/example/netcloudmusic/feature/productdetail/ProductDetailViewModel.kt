@@ -2,11 +2,11 @@ package com.example.netcloudmusic.feature.productdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.netcloudmusic.core.data.repository.ProductRepository
 import com.example.netcloudmusic.core.exception.CommonException
 import com.example.netcloudmusic.core.exception.tipMessage
 import com.example.netcloudmusic.core.model.Product
 import com.example.netcloudmusic.core.model.Spec
-import com.example.netcloudmusic.core.network.KtorNetworkDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.delay
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
     private val productId: String,
-    private val dataSource: KtorNetworkDataSource = KtorNetworkDataSource(),
+    private val productRepository: ProductRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -30,7 +30,7 @@ class ProductDetailViewModel(
             val startedAt = kotlin.time.TimeSource.Monotonic.markNow()
             _uiState.value = ProductDetailUiState.Loading
             try {
-                val response = dataSource.productDetail(productId)
+                val response = productRepository.productDetail(productId)
                 val remaining = 1000L - startedAt.elapsedNow().inWholeMilliseconds
                 if (remaining > 0) delay(remaining)
                 if (!response.isSucceeded) throw CommonException(networkResponse = response)

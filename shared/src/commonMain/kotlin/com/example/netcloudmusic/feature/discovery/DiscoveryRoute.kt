@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.core.design.theme.SpaceExtraMedium
 import com.example.netcloudmusic.core.design.theme.SpaceExtraSmall
 import com.example.netcloudmusic.core.design.theme.SpaceSmallHeight
@@ -63,7 +64,7 @@ import org.jetbrains.compose.resources.stringResource
 fun DiscoveryRoute(toProductDetail: (String) -> Unit = {}) {
     val viewModel: DiscoveryViewModel = viewModel(
         factory = viewModelFactory {
-            initializer { DiscoveryViewModel() }
+            initializer { DiscoveryViewModel(AppContainerProvider.instance.productRepository) }
         }
     )
     val uiState by viewModel.uiState.collectAsState()

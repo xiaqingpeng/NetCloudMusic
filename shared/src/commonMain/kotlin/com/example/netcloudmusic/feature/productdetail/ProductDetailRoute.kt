@@ -64,6 +64,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import coil3.compose.AsyncImage
+import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.core.model.Product
 import com.example.netcloudmusic.core.design.component.MyErrorView
 import com.example.netcloudmusic.core.design.component.MyLoading
@@ -103,7 +104,14 @@ fun ProductDetailRoute(
 ) {
     val vm: ProductDetailViewModel = viewModel(
         key = "product-detail-$productId",
-        factory = viewModelFactory { initializer { ProductDetailViewModel(productId) } },
+        factory = viewModelFactory {
+            initializer {
+                ProductDetailViewModel(
+                    productId = productId,
+                    productRepository = AppContainerProvider.instance.productRepository,
+                )
+            }
+        },
     )
     val state by vm.uiState.collectAsState()
     val spec by vm.specUiState.collectAsState()

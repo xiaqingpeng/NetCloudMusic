@@ -24,4 +24,6 @@ data class User(
     val openid: String? = null,
     val expiresIn: Long? = null,
     val style: Int? = null,
+    val followingsCount: Long = 0,
+    val followersCount: Long = 0,
 )
