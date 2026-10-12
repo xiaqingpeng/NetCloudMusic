@@ -15,7 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,19 +46,21 @@ import org.jetbrains.compose.resources.painterResource
 import netcloudmusic.shared.generated.resources.splash_logo
 import netcloudmusic.shared.generated.resources.me_login_tip
 import netcloudmusic.shared.generated.resources.unknown_user
+import netcloudmusic.shared.generated.resources.me
+import netcloudmusic.shared.generated.resources.settings
 
 /**
  * 我的界面
  */
 @Composable
-fun MeRoute(toLogin: () -> Unit = {}) {
+fun MeRoute(toLogin: () -> Unit = {}, toSettings: () -> Unit = {}) {
     val viewModel: MeViewModel = viewModel(
         factory = viewModelFactory {
             initializer { MeViewModel(AppContainerProvider.instance.userRepository) }
         },
     )
     val state by viewModel.uiState.collectAsState()
-    MeScreen(state, toLogin, viewModel::logout)
+    MeScreen(state, toLogin, viewModel::logout, toSettings)
 }
 
 @Composable
@@ -60,15 +68,32 @@ fun MeScreen(
     state: MeUiState = MeUiState(),
     toLogin: () -> Unit = {},
     onLogout: () -> Unit = {},
+    toSettings: () -> Unit = {},
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        if (state.user != null) {
-            UserProfileSection(state.user, onLogout)
-        } else {
-            LoginPromptSection(toLogin)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(Res.string.me)) },
+                actions = {
+                    IconButton(onClick = toSettings) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(Res.string.settings),
+                        )
+                    }
+                },
+            )
+        },
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(contentPadding).padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (state.user != null) {
+                UserProfileSection(state.user, onLogout)
+            } else {
+                LoginPromptSection(toLogin)
+            }
         }
     }
 }

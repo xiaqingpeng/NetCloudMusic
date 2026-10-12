@@ -24,8 +24,9 @@ fun NavController.navigateToMain() {
 fun NavGraphBuilder.mainScreen(
     toProductDetail: (String) -> Unit = {},
     toLogin: () -> Unit = {},
+    toSettings: () -> Unit = {},
 ) {
     myComposable(route = MAIN_ROUTE) {
-        MainRoute(toProductDetail, toLogin)
+        MainRoute(toProductDetail, toLogin, toSettings)
     }
 }

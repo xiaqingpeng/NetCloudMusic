@@ -28,6 +28,8 @@ import com.example.netcloudmusic.feature.productdetail.navigation.navigateToProd
 import com.example.netcloudmusic.feature.productdetail.navigation.productDetailScreen
 import com.example.netcloudmusic.feature.splash.navigation.SPLASH_ROUTE
 import com.example.netcloudmusic.feature.splash.navigation.splashScreen
+import com.example.netcloudmusic.feature.settings.navigation.navigateToSettings
+import com.example.netcloudmusic.feature.settings.navigation.settingsScreen
 import com.example.netcloudmusic.ui.theme.AppTheme
 
 @Composable
@@ -68,6 +70,7 @@ fun MyApp() {
             mainScreen(
                 toProductDetail = navController::navigateToProductDetail,
                 toLogin = navController::navigateToLoginHome,
+                toSettings = navController::navigateToSettings,
             )
             loginHomeScreen(
                 toBack = { navController.popBackStack() },
@@ -82,6 +85,7 @@ fun MyApp() {
                 onCartClick = navController::navigateToCart,
             )
             cartScreen()
+            settingsScreen(toBack = { navController.popBackStack() })
         }
     }
 }
