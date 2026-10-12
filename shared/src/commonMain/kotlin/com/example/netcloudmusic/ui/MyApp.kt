@@ -3,12 +3,16 @@ package com.example.netcloudmusic.ui
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.example.netcloudmusic.core.network.Network
+import com.example.netcloudmusic.core.data.repository.ThemeMode
+import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.feature.guide.navigation.guideScreen
 import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
 import com.example.netcloudmusic.feature.main.navigation.mainScreen
@@ -36,7 +40,11 @@ fun MyApp() {
             .build()
     }
 
-    AppTheme {
+    val themeMode by AppContainerProvider.instance.themeRepository.themeMode.collectAsState(
+        initial = ThemeMode.SYSTEM
+    )
+
+    AppTheme(themeMode = themeMode) {
         val navController = rememberNavController()
 
         NavHost(

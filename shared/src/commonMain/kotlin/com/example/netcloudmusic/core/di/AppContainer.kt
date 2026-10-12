@@ -1,5 +1,9 @@
 package com.example.netcloudmusic.core.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.example.netcloudmusic.core.data.local.createDataStore
+import com.example.netcloudmusic.core.data.repository.ThemeRepository
 import com.example.netcloudmusic.core.data.repository.ProductRepository
 import com.example.netcloudmusic.core.data.repository.UserRepository
 import com.example.netcloudmusic.core.network.KtorNetworkDataSource
@@ -13,11 +17,27 @@ import com.example.netcloudmusic.core.network.NetworkDataSource
  */
 class AppContainer(
     networkDataSource: NetworkDataSource = KtorNetworkDataSource(),
+    dataStore: DataStore<Preferences>,
 ) {
     val productRepository: ProductRepository = ProductRepository(networkDataSource)
     val userRepository: UserRepository = UserRepository(networkDataSource)
+    val themeRepository: ThemeRepository = ThemeRepository(dataStore)
 }
 
 object AppContainerProvider {
-    val instance: AppContainer by lazy(::AppContainer)
+    private var appContainer: AppContainer? = null
+
+    val instance: AppContainer
+        get() = checkNotNull(appContainer) {
+            "AppContainerProvider must be initialized before accessing instance"
+        }
+
+    fun initialize(
+        context: Any? = null,
+        networkDataSource: NetworkDataSource = KtorNetworkDataSource(),
+    ) {
+        if (appContainer == null) {
+            appContainer = AppContainer(networkDataSource, createDataStore(context))
+        }
+    }
 }
