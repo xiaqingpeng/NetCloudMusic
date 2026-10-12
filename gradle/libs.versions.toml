@@ -17,6 +17,9 @@ ktor = "3.3.1"
 material3 = "1.12.0-alpha03"
 navigation = "2.10.0-beta01"
 
+datastore = "1.2.0"
+atomicfu = "0.23.2"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -48,6 +51,10 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version = "3.6.3" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version = "3.6.3" }
+datastore = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

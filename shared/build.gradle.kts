@@ -72,9 +72,15 @@ kotlin {
             //商品 JSON 数据解析
             implementation(libs.kotlinx.serialization.json)
 
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.atomicfu)
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
+
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
