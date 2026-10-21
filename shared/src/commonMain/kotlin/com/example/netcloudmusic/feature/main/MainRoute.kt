@@ -29,8 +29,15 @@ import kotlinx.coroutines.launch
  * 主界面
  */
 @Composable
-fun MainRoute(toProductDetail: (String) -> Unit = {}, toLogin: () -> Unit = {}, toSettings: () -> Unit = {}) {
-    MainScreen(toProductDetail, toLogin, toSettings)
+fun MainRoute(
+    toProductDetail: (String) -> Unit = {},
+    toLogin: () -> Unit = {},
+    toSettings: () -> Unit = {},
+    toProfile: () -> Unit = {},
+    toReceivingAddress: () -> Unit = {},
+    toAbout: () -> Unit = {},
+) {
+    MainScreen(toProductDetail, toLogin, toSettings, toProfile, toReceivingAddress, toAbout)
 }
 
 @Composable
@@ -38,47 +45,39 @@ fun MainScreen(
     toProductDetail: (String) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
+    toProfile: () -> Unit = {},
+    toReceivingAddress: () -> Unit = {},
+    toAbout: () -> Unit = {},
 ) {
-    /**
-     * 当前界面选中的route
-     */
     var currentDestination by remember { mutableStateOf(TopLevelDestination.DISCOVERY.route) }
-    val pagerState = rememberPagerState {
-        TopLevelDestination.entries.size
-    }
+    val pagerState = rememberPagerState { TopLevelDestination.entries.size }
     val coroutineScope = rememberCoroutineScope()
 
-    /**
-     * 手指滑动 Pager 时，同步底部导航选中状态
-     */
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
-            .collect {
-                currentDestination = TopLevelDestination.entries[it].route
-            }
+            .collect { currentDestination = TopLevelDestination.entries[it].route }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         MainContent(
             modifier = Modifier.weight(1f),
             pagerState = pagerState,
             toProductDetail = toProductDetail,
             toLogin = toLogin,
             toSettings = toSettings,
+            toProfile = toProfile,
+            toReceivingAddress = toReceivingAddress,
+            toAbout = toAbout,
         )
         MyNavigationBar(
             modifier = Modifier,
             destinations = TopLevelDestination.entries.toList(),
             onNavigateToDestination = {
                 currentDestination = TopLevelDestination.entries[it].route
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
-                }
+                coroutineScope.launch { pagerState.animateScrollToPage(it) }
             },
-            currentDestination = currentDestination
+            currentDestination = currentDestination,
         )
     }
 }
@@ -90,17 +89,23 @@ fun MainContent(
     toProductDetail: (String) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
+    toProfile: () -> Unit = {},
+    toReceivingAddress: () -> Unit = {},
+    toAbout: () -> Unit = {},
 ) {
-    HorizontalPager(
-        state = pagerState,
-        modifier = modifier.fillMaxWidth(),
-    ) {
+    HorizontalPager(state = pagerState, modifier = modifier.fillMaxWidth()) {
         when (it) {
             0 -> DiscoveryRoute(toProductDetail)
             1 -> ShortVideoRoute()
             2 -> CategoryRoute()
             3 -> CartRoute()
-            4 -> MeRoute(toLogin, toSettings)
+            4 -> MeRoute(
+                toLogin = toLogin,
+                toSettings = toSettings,
+                toProfile = toProfile,
+                toReceivingAddress = toReceivingAddress,
+                toAbout = toAbout,
+            )
             else -> Unit
         }
     }

@@ -26,4 +26,20 @@ data class User(
     val style: Int? = null,
     val followingsCount: Long = 0,
     val followersCount: Long = 0,
-)
+    val commentsCount: Long = 0,
+    /** 验证码（验证码登录时传递） */
+    val code: String? = null,
+    val province: String? = null,
+    val provinceCode: String? = null,
+    val city: String? = null,
+    val cityCode: String? = null,
+    val area: String? = null,
+    val areaCode: String? = null,
+) {
+    /** 格式化性别：0=保密 10=男 20=女 */
+    fun getGenderFormat(): String = when (gender) {
+        "10" -> "男"
+        "20" -> "女"
+        else -> "保密"
+    }
+}

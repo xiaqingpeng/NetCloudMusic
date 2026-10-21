@@ -22,9 +22,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * 底部导航栏
- * 
- * 在 KMP 中使用 Icon 组件，图标资源由各平台提供
+ * 底部 tabbar
  */
 @Composable
 fun MyNavigationBar(
@@ -50,9 +48,7 @@ fun MyNavigationBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .weight(1f)
-                    .clickable {
-                        onNavigateToDestination(index)
-                    }
+                    .clickable { onNavigateToDestination(index) }
                     .padding(vertical = SpaceExtraMedium)
             ) {
                 Image(

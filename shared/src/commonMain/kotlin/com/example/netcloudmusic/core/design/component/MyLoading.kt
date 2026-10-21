@@ -9,15 +9,22 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.example.netcloudmusic.core.design.theme.SpaceLarge
+import com.example.netcloudmusic.core.design.theme.SpaceOuter
 
 @Composable
-fun MyLoading(modifier: Modifier = Modifier) {
+fun MyLoading(
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = modifier.fillMaxSize().padding(vertical = 16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = SpaceOuter),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        CircularProgressIndicator(modifier = Modifier.size(20.dp))
+        CircularProgressIndicator(
+            modifier = Modifier.size(SpaceLarge)
+        )
     }
 }

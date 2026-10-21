@@ -1,4 +1,4 @@
-package com.example.netcloudmusic.feature.compoent
+package com.example.netcloudmusic.feature.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

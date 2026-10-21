@@ -61,4 +61,54 @@
     <string name="store">Store</string>
     <string name="demo_address">High-Tech Zone, Chengdu, Sichuan</string>
     <string name="demo_store">Xiaomi Home, Chengdu Impression City</string>
+
+    <!-- register / codelogin / profile -->
+    <string name="register_and_login">Register &amp; Login</string>
+    <string name="nickname">Nickname</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="enter_nickname">Enter nickname</string>
+    <string name="enter_phone">Enter phone number</string>
+    <string name="enter_email">Enter email address</string>
+    <string name="enter_confirm_password">Re-enter password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="enter_code">Enter 6-digit code</string>
+    <string name="send_code">Send Code</string>
+    <string name="resend">Resend</string>
+    <string name="my_profile">My Profile</string>
+    <string name="save">Save</string>
+    <string name="save_success">Saved successfully</string>
+    <string name="gender">Gender</string>
+    <string name="birthday">Birthday</string>
+    <string name="description">About Me</string>
+    <string name="avatar">Avatar</string>
+    <string name="login_failed">Login failed, please check the verification code</string>
+    <string name="error_network">Network request failed, please check your connection</string>
+
+    <!-- Me screen -->
+    <string name="super_vip">Super VIP</string>
+    <string name="mall_vip_hint">Subscribe</string>
+    <string name="my_friend">Following</string>
+    <string name="my_fans">Followers</string>
+    <string name="my_collect">Favorites</string>
+    <string name="my_order">My Orders</string>
+    <string name="all_order">All Orders</string>
+    <string name="wait_pay">Unpaid</string>
+    <string name="wait_received">To Receive</string>
+    <string name="wait_comment">To Review</string>
+    <string name="refund_sales_service">Refund/After-sales</string>
+    <string name="more_service">More Services</string>
+    <string name="show_more">More</string>
+
+    <!-- component common -->
+    <string name="back">Back</string>
+    <string name="confirm_delete">Confirm Delete</string>
+    <string name="select_birthday">Select Birthday</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="no_data">No data available</string>
+    <string name="error_network_not_connect">Network not connected. Please check your network settings.</string>
+    <string name="gender_secret">Prefer not to say</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
 </resources>

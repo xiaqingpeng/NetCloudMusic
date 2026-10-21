@@ -8,9 +8,6 @@ import com.example.netcloudmusic.ui.navigation.myComposable
 
 const val MAIN_ROUTE = "main"
 
-/**
- * 跳转到主界面
- */
 fun NavController.navigateToMain() {
     navigate(MAIN_ROUTE) {
         launchSingleTop = true
@@ -18,15 +15,22 @@ fun NavController.navigateToMain() {
     }
 }
 
-/**
- * 配置导航
- */
 fun NavGraphBuilder.mainScreen(
     toProductDetail: (String) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
+    toProfile: () -> Unit = {},
+    toReceivingAddress: () -> Unit = {},
+    toAbout: () -> Unit = {},
 ) {
     myComposable(route = MAIN_ROUTE) {
-        MainRoute(toProductDetail, toLogin, toSettings)
+        MainRoute(
+            toProductDetail = toProductDetail,
+            toLogin = toLogin,
+            toSettings = toSettings,
+            toProfile = toProfile,
+            toReceivingAddress = toReceivingAddress,
+            toAbout = toAbout,
+        )
     }
 }

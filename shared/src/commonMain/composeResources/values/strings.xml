@@ -62,4 +62,54 @@
     <string name="store">门店</string>
     <string name="demo_address">四川省 成都市 高新区</string>
     <string name="demo_store">小米之家 四川省成都市印象城专卖店</string>
+
+    <!-- register / codelogin / profile -->
+    <string name="register_and_login">注册并登录</string>
+    <string name="nickname">昵称</string>
+    <string name="phone">手机号</string>
+    <string name="email">邮箱</string>
+    <string name="enter_nickname">请输入昵称</string>
+    <string name="enter_phone">请输入手机号</string>
+    <string name="enter_email">请输入邮箱</string>
+    <string name="enter_confirm_password">请再次输入密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="verification_code">验证码</string>
+    <string name="enter_code">请输入6位验证码</string>
+    <string name="send_code">发送验证码</string>
+    <string name="resend">重新发送</string>
+    <string name="my_profile">个人资料</string>
+    <string name="save">保存</string>
+    <string name="save_success">保存成功</string>
+    <string name="gender">性别</string>
+    <string name="birthday">生日</string>
+    <string name="description">个人介绍</string>
+    <string name="avatar">头像</string>
+    <string name="login_failed">登录失败，请检查验证码</string>
+    <string name="error_network">网络请求失败，请检查网络</string>
+
+    <!-- 我的页面 -->
+    <string name="super_vip">超级会员</string>
+    <string name="mall_vip_hint">立即开通</string>
+    <string name="my_friend">关注</string>
+    <string name="my_fans">粉丝</string>
+    <string name="my_collect">收藏</string>
+    <string name="my_order">我的订单</string>
+    <string name="all_order">全部订单</string>
+    <string name="wait_pay">待付款</string>
+    <string name="wait_received">待收货</string>
+    <string name="wait_comment">待评价</string>
+    <string name="refund_sales_service">退款/售后</string>
+    <string name="more_service">更多服务</string>
+    <string name="show_more">查看更多</string>
+
+    <!-- component 通用 -->
+    <string name="back">返回</string>
+    <string name="confirm_delete">确认删除</string>
+    <string name="select_birthday">选择生日</string>
+    <string name="select_gender">选择性别</string>
+    <string name="no_data">暂无数据</string>
+    <string name="error_network_not_connect">网络未连接，请检查网络设置</string>
+    <string name="gender_secret">保密</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
 </resources>

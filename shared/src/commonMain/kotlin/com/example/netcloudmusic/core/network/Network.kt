@@ -10,6 +10,8 @@ import kotlinx.serialization.json.Json
 
 val NetworkJson = Json {
     ignoreUnknownKeys = true
+    explicitNulls = false   // null 字段不序列化，与 Compose 版 Retrofit 行为一致
+    encodeDefaults = true  // 值等于默认值的字段也序列化（如 default=false），与 Compose 版 Retrofit+Gson 行为一致
 }
 
 object Network {
