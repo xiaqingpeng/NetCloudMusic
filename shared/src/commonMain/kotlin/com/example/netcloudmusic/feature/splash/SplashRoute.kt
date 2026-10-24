@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.netcloudmusic.util.SuperDateUtil
+import com.example.netcloudmusic.core.util.SuperDateUtil
 import org.jetbrains.compose.resources.painterResource
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.splash_banner

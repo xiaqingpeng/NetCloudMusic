@@ -12,7 +12,6 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.example.netcloudmusic.core.data.repository.ThemeMode
 import com.example.netcloudmusic.core.di.AppContainerProvider
-import com.example.netcloudmusic.core.network.Network
 import com.example.netcloudmusic.feature.about.navigation.aboutScreen
 import com.example.netcloudmusic.feature.about.navigation.navigateToAbout
 import com.example.netcloudmusic.feature.address.AddressRefreshBus
@@ -21,10 +20,15 @@ import com.example.netcloudmusic.feature.address.navigation.navigateToAddress
 import com.example.netcloudmusic.feature.addressdetail.navigation.addressDetailScreen
 import com.example.netcloudmusic.feature.addressdetail.navigation.navigateToAddAddress
 import com.example.netcloudmusic.feature.addressdetail.navigation.navigateToAddressDetail
-import com.example.netcloudmusic.feature.cart.navigation.cartScreen
-import com.example.netcloudmusic.feature.cart.navigation.navigateToCart
+import com.example.netcloudmusic.feature.categorydetail.navigation.categoryDetailScreen
+import com.example.netcloudmusic.feature.categorydetail.navigation.navigateToCategoryDetail
 import com.example.netcloudmusic.feature.codelogin.navigation.codeLoginScreen
 import com.example.netcloudmusic.feature.codelogin.navigation.navigateToCodeLogin
+import com.example.netcloudmusic.feature.confirmorder.navigation.ConfirmOrderParam
+import com.example.netcloudmusic.feature.confirmorder.navigation.confirmOrderScreen
+import com.example.netcloudmusic.feature.confirmorder.navigation.navigateToConfirmOrder
+import com.example.netcloudmusic.feature.forgetpassword.navigation.forgetPasswordScreen
+import com.example.netcloudmusic.feature.forgetpassword.navigation.navigateToForgetPassword
 import com.example.netcloudmusic.feature.guide.navigation.guideScreen
 import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
 import com.example.netcloudmusic.feature.login.navigation.finishLogin
@@ -34,6 +38,8 @@ import com.example.netcloudmusic.feature.loginhome.navigation.loginHomeScreen
 import com.example.netcloudmusic.feature.loginhome.navigation.navigateToLoginHome
 import com.example.netcloudmusic.feature.main.navigation.mainScreen
 import com.example.netcloudmusic.feature.main.navigation.navigateToMain
+import com.example.netcloudmusic.feature.pay.navigation.navigateToPay
+import com.example.netcloudmusic.feature.pay.navigation.payScreen
 import com.example.netcloudmusic.feature.productdetail.navigation.navigateToProductDetail
 import com.example.netcloudmusic.feature.productdetail.navigation.productDetailScreen
 import com.example.netcloudmusic.feature.profile.navigation.navigateToProfile
@@ -48,13 +54,28 @@ import com.example.netcloudmusic.feature.settings.navigation.settingsScreen
 import com.example.netcloudmusic.feature.splash.navigation.SPLASH_ROUTE
 import com.example.netcloudmusic.feature.splash.navigation.splashScreen
 import com.example.netcloudmusic.ui.theme.AppTheme
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.http.HttpHeaders
 
 @Composable
 fun MyApp() {
     setSingletonImageLoaderFactory { context ->
+        // 图片请求不能复用业务 API client：API client 会自动携带登录
+        // Authorization，部分第三方图片 CDN 会因此返回 403。
+        val imageHttpClient = HttpClient {
+            install(DefaultRequest) {
+                headers.append(
+                    HttpHeaders.UserAgent,
+                    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) " +
+                        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 " +
+                        "Mobile/15E148 Safari/604.1"
+                )
+            }
+        }
         ImageLoader.Builder(context)
             .components {
-                add(KtorNetworkFetcherFactory(httpClient = { Network.httpClient }))
+                add(KtorNetworkFetcherFactory(httpClient = { imageHttpClient }))
             }
             .build()
     }
@@ -87,11 +108,20 @@ fun MyApp() {
             // ── 主界面（底部 Tab）────────────────────────────────────────────
             mainScreen(
                 toProductDetail = navController::navigateToProductDetail,
+                toCategoryDetail = navController::navigateToCategoryDetail,
                 toLogin = navController::navigateToLoginHome,
                 toSettings = navController::navigateToSettings,
                 toProfile = navController::navigateToProfile,
                 toReceivingAddress = navController::navigateToAddress,
                 toAbout = navController::navigateToAbout,
+                toConfirmOrder = { cartIds ->
+                    // 从购物车跳转到确认订单页面，传递购物车 ID 列表
+                    navController.navigateToConfirmOrder(
+                        ConfirmOrderParam(
+                            carts = cartIds,
+                        )
+                    )
+                },
             )
 
             // ── 登录流程 ──────────────────────────────────────────────────────
@@ -104,6 +134,7 @@ fun MyApp() {
                 toBack = { navController.popBackStack() },
                 finishAllLoginPages = navController::finishLogin,
                 toRegister = navController::navigateToRegister,
+                toSetPassword = navController::navigateToForgetPassword,
             )
             registerScreen(
                 toBack = { navController.popBackStack() },
@@ -112,6 +143,10 @@ fun MyApp() {
             codeLoginScreen(
                 toBack = { navController.popBackStack() },
                 finishAllLoginPages = navController::finishLogin,
+            )
+            forgetPasswordScreen(
+                toBack = { navController.popBackStack() },
+                onSuccess = { navController.popBackStack() },
             )
 
             // ── 用户模块 ──────────────────────────────────────────────────────
@@ -151,9 +186,40 @@ fun MyApp() {
             // ── 商品 ──────────────────────────────────────────────────────────
             productDetailScreen(
                 toBack = { navController.popBackStack() },
-                onCartClick = navController::navigateToCart,
+                toConfirmOrder = { orderRequest ->
+                    // 跳转到确认订单页面
+                    navController.navigateToConfirmOrder(
+                        ConfirmOrderParam(
+                            productId = orderRequest.productId,
+                            stockId = orderRequest.stockId,
+                            count = orderRequest.count,
+                        )
+                    )
+                },
             )
-            cartScreen()
+            
+            // cartScreen 已经在 mainScreen 内部调用，这里删除重复定义
+            
+            // ── 分类详情 ───────────────────────────────────────────────────────
+            categoryDetailScreen(
+                toBack = { navController.popBackStack() },
+                toProductDetail = navController::navigateToProductDetail,
+            )
+            
+            // ── 订单流程 ───────────────────────────────────────────────────────
+            confirmOrderScreen(
+                toBack = { navController.popBackStack() },
+                toSelectAddress = navController::navigateToAddress,
+                toPayOrder = { orderId -> navController.navigateToPay(orderId) },
+                navController = navController,
+            )
+            payScreen(
+                toBack = { navController.popBackStack() },
+                toOrderDetail = { orderId ->
+                    // TODO: 跳转到订单详情页（需要实现订单详情功能）
+                    navController.popBackStack()
+                },
+            )
 
             // ── 设置 ──────────────────────────────────────────────────────────
             settingsScreen(toBack = { navController.popBackStack() })

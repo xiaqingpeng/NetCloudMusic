@@ -26,10 +26,9 @@ import com.example.netcloudmusic.core.design.theme.SpaceExtraMedium
 import com.example.netcloudmusic.core.design.theme.SpaceMedium
 import com.example.netcloudmusic.core.design.theme.SpaceSmallHeight
 import com.example.netcloudmusic.core.design.theme.SpaceSmallWidth
-import com.example.netcloudmusic.core.config.Config
 import com.example.netcloudmusic.core.model.Product
-import com.example.netcloudmusic.util.ResourceUtil
-import com.example.netcloudmusic.util.StringUtil
+import com.example.netcloudmusic.core.util.ResourceUtil
+import com.example.netcloudmusic.core.util.StringUtil
 import org.jetbrains.compose.resources.stringResource
 
 import org.jetbrains.compose.resources.painterResource

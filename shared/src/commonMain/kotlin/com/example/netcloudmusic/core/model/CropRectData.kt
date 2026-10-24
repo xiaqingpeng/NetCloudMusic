@@ -9,6 +9,4 @@ data class CropRectData(
     val right: Float,
     val bottom: Float,
     val uri: String? = null,
-) {
-
-}
+)

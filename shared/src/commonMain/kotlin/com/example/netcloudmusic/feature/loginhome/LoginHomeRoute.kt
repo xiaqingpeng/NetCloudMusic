@@ -8,17 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import com.example.netcloudmusic.core.design.component.MyCenterTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +25,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.ui.unit.dp
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.code_login
-import netcloudmusic.shared.generated.resources.login
 import netcloudmusic.shared.generated.resources.splash_logo
 import netcloudmusic.shared.generated.resources.user_agreement
 import netcloudmusic.shared.generated.resources.user_agreement_and
@@ -38,7 +32,7 @@ import netcloudmusic.shared.generated.resources.user_agreement_privacy_policy
 import netcloudmusic.shared.generated.resources.user_agreement_start
 import netcloudmusic.shared.generated.resources.username_login
 import com.example.netcloudmusic.core.config.Config
-import com.example.netcloudmusic.util.rememberExternalUrlOpener
+import com.example.netcloudmusic.core.util.rememberExternalUrlOpener
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

@@ -19,8 +19,14 @@ fun NavController.navigateToCart() {
 /**
  * 配置导航
  */
-fun NavGraphBuilder.cartScreen() {
+fun NavGraphBuilder.cartScreen(
+    toProductDetail: (String) -> Unit,
+    toConfirmOrder: (List<String>) -> Unit,
+) {
     myComposable(route = CART_ROUTE) {
-        CartRoute()
+        CartRoute(
+            toProductDetail = toProductDetail,
+            toConfirmOrder = toConfirmOrder,
+        )
     }
 }

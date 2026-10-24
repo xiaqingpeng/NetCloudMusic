@@ -1,6 +1,6 @@
 package com.example.netcloudmusic.core.model
 
-import com.example.netcloudmusic.util.Constant
+import com.example.netcloudmusic.core.util.Constant
 import kotlinx.serialization.Serializable
 
 /**

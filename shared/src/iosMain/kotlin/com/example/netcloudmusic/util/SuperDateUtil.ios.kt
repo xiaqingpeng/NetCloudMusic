@@ -1,4 +1,4 @@
-package com.example.netcloudmusic.util
+package com.example.netcloudmusic.core.util
 
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitYear

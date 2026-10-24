@@ -5,7 +5,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import com.example.netcloudmusic.util.Constant
+import com.example.netcloudmusic.core.util.Constant
 import kotlinx.serialization.json.Json
 
 val NetworkJson = Json {
@@ -16,6 +16,14 @@ val NetworkJson = Json {
 
 object Network {
     val httpClient: HttpClient by lazy { createHttpClient() }
+
+    /**
+     * 用于下载公开图片资源的客户端。
+     *
+     * 商品图片所在的 CDN 可能会拒绝携带业务 Authorization 的请求。
+     * 因此分享图片不能复用 [httpClient]，否则部分平台会得到 403。
+     */
+    val imageHttpClient: HttpClient by lazy { createImageHttpClient() }
 }
 
 internal expect fun platformHttpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
@@ -29,5 +37,12 @@ private fun createHttpClient(): HttpClient = platformHttpClient {
     }
     install(ContentNegotiation) {
         json(NetworkJson)
+    }
+}
+
+private fun createImageHttpClient(): HttpClient = platformHttpClient {
+    install(DefaultRequest) {
+        headers.append("User-Agent", "NetCloudMusic/1.0")
+        headers.append("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8")
     }
 }

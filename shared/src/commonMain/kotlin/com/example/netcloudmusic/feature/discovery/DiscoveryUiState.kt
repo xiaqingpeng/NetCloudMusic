@@ -1,30 +1,39 @@
 package com.example.netcloudmusic.feature.discovery
 
+import androidx.compose.runtime.Immutable
 import com.example.netcloudmusic.core.model.Product
 import com.example.netcloudmusic.core.model.ViewData
 
+// @Immutable 告知 Compose 编译器此类所有字段不会在外部被修改，
+// 允许编译器将持有它的 Composable 标记为可跳过（skippable），避免不必要的重组。
+@Immutable
 data class DiscoveryUiState(
-    val topDatum: List<ViewData> = listOf(),
-    val datum: List<Product> = listOf(),
+    val topDatum: List<ViewData> = emptyList(),
+    val datum: List<Product> = emptyList(),
 
+    /** 首次进入页面的全屏加载状态，与下拉刷新互斥 */
+    val isInitialLoading: Boolean = true,
 
-    /**
-     * 0:空闲中
-     *
-     * 1：下拉刷新中
-     * 2：下拉刷新失败
-     * 3：下拉刷新成功
-     */
-    val loadState: Int = 0,
+    /** 下拉刷新状态，驱动 PullToRefreshBox 的指示器 */
+    val isRefreshing: Boolean = false,
 
-    /**
-     * 0：上拉加载空闲中
-     * 1：上拉加载中
-     * 2：上拉加载失败
-     * 3：上拉加载成功
-     * 4：没有更多数据
-     */
-    val loadMoreState: Int = 0,
+    /** 刷新结果，成功/失败后短暂显示 toast，随后重置为 Idle */
+    val refreshResult: RefreshResult = RefreshResult.Idle,
+
+    /** 上拉加载更多状态 */
+    val loadMoreState: LoadMoreState = LoadMoreState.Idle,
 
     val errorMessage: String? = null,
 )
+
+/** 下拉刷新的结果状态 */
+enum class RefreshResult { Idle, Success, Error }
+
+/** 上拉加载更多的状态 */
+enum class LoadMoreState {
+    Idle,    // 空闲，显示"上拉加载更多"提示
+    Loading, // 加载中
+    Error,   // 加载失败，显示重试
+    Done,    // 本批加载成功，短暂显示"加载成功"
+    NoMore,  // 没有更多数据
+}

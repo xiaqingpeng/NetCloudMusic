@@ -112,4 +112,33 @@
     <string name="gender_secret">保密</string>
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
+    
+    <!-- 新增：订单和支付相关 -->
+    <string name="select_address">选择收货地址</string>
+    <string name="product_count">x%1$d</string>
+    <string name="resend_count">%1$ds后重新发送</string>
+    <string name="pay_order">支付订单</string>
+    <string name="go_pay">去支付</string>
+    <string name="alipay">支付宝</string>
+    <string name="wechat">微信支付</string>
+    <string name="huabei_stages">花呗分期</string>
+    
+    <!-- 忘记密码错误提示 -->
+    <string name="error_phone_empty">请输入手机号</string>
+    <string name="error_phone_format">手机号格式不正确</string>
+    <string name="error_code_empty">请输入验证码</string>
+    <string name="error_code_format">验证码格式不正确</string>
+    <string name="error_password_empty">请输入密码</string>
+    <string name="error_password_format">密码格式不正确（6-20位字母数字组合）</string>
+    <string name="error_password_confirm_empty">请再次输入密码</string>
+    <string name="error_password_not_match">两次输入的密码不一致</string>
+    
+    <!-- Discovery 页面 -->
+    <string name="pull_up_load_more">上拉加载更多</string>
+    <string name="error_load_click">加载失败，点击重试</string>
+    <string name="load_success">加载成功</string>
+    <string name="hot_product">热门商品</string>
+    <string name="recommand_for_you">为你推荐</string>
+    <string name="empty_data">暂无数据</string>
+    <string name="refresh_success_new_data_added">刷新成功，新增 %1$d 条数据</string>
 </resources>

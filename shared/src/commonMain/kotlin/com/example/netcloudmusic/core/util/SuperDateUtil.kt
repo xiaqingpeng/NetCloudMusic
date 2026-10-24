@@ -1,4 +1,4 @@
-package com.example.netcloudmusic.util
+package com.example.netcloudmusic.core.util
 
 /**
  * 日期时间工具类。

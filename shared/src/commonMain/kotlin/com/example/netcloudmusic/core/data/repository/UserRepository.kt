@@ -87,6 +87,18 @@ class UserRepository(
         }
     }
 
+    // ── 忘记密码 ──────────────────────────────────────────────────────────────
+
+    /** 发送忘记密码验证码。style = 10 表示忘记密码验证码。 */
+    fun sendForgotPasswordCode(phone: String): Flow<NetworkResponse<SendCodeResponse>> = flow {
+        emit(dataSource.sendForgotPasswordCode(phone))
+    }
+
+    /** 重置密码 */
+    fun resetPassword(phone: String, code: String, newPassword: String): Flow<NetworkResponse<BaseModel>> = flow {
+        emit(dataSource.resetPassword(phone, code, newPassword))
+    }
+
     // ── 用户详情 / 更新 ───────────────────────────────────────────────────────
 
     /** 获取用户详情（网络请求）。 */

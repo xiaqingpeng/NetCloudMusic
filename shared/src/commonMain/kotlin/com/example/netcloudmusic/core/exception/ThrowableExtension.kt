@@ -1,6 +1,6 @@
 package com.example.netcloudmusic.core.exception
 
-import com.example.netcloudmusic.util.NetworkUtil
+import com.example.netcloudmusic.core.util.NetworkUtil
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.bg_error
 import org.jetbrains.compose.resources.DrawableResource

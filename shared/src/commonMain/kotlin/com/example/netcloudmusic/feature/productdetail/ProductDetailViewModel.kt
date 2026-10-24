@@ -1,102 +1,260 @@
 package com.example.netcloudmusic.feature.productdetail
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.netcloudmusic.core.data.repository.CartRepository
 import com.example.netcloudmusic.core.data.repository.ProductRepository
-import com.example.netcloudmusic.core.exception.CommonException
 import com.example.netcloudmusic.core.exception.tipMessage
+import com.example.netcloudmusic.core.model.Cart
 import com.example.netcloudmusic.core.model.Product
 import com.example.netcloudmusic.core.model.Spec
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.netcloudmusic.core.network.Network
+import com.example.netcloudmusic.core.util.ResourceUtil
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import kotlin.time.TimeSource
 
+/**
+ * 商品详情VM
+ *
+ * 与 ClientApp 对齐：
+ * - 通过 mutableStateOf<ProductDetailOrderRequest?> 触发导航，而非直接调用回调
+ * - onAddCartClick 接入购物车 API
+ */
 class ProductDetailViewModel(
     private val productId: String,
     private val productRepository: ProductRepository,
+    private val cartRepository: CartRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
-    val uiState = _uiState.asStateFlow()
-    private val _specUiState = MutableStateFlow(ProductSpecUiState())
-    val specUiState = _specUiState.asStateFlow()
-    private val _isShowSpecDialog = MutableStateFlow(false)
-    val isShowSpecDialog = _isShowSpecDialog.asStateFlow()
 
-    init { loadData() }
+    private val _uiState = MutableStateFlow<ProductDetailUiState>(ProductDetailUiState.Loading)
+    val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
+
+    /** 与 ClientApp 一致：用 mutableStateOf 触发确认订单页跳转 */
+    val toConfirmOrderPage = mutableStateOf<ProductDetailOrderRequest?>(null)
+
+    val isShowSpecDialog = MutableStateFlow<Boolean>(false)
+
+    val specUiState = MutableStateFlow<ProductSpecUiState>(ProductSpecUiState())
+
+    /** 成功提示资源 id */
+    val tipSuccessMessage = MutableStateFlow<String?>(null)
+
+    /** 错误提示文字 */
+    val tipError = MutableStateFlow<String?>(null)
+
+    /** 分享文字触发 */
+    val toShareText = mutableStateOf<String>("")
+
+    /** 分享图片数据触发 */
+    val toShareImage = mutableStateOf<ByteArray?>(null)
+
+    private lateinit var data: Product
+
+    init {
+        println("ProductDetailViewModel: init - productId=$productId")
+        loadData()
+    }
 
     fun loadData() {
+        println("ProductDetailViewModel: loadData 开始")
         viewModelScope.launch {
-            val startedAt = kotlin.time.TimeSource.Monotonic.markNow()
-            _uiState.value = ProductDetailUiState.Loading
+            val startTime = TimeSource.Monotonic.markNow()
+
             try {
-                val response = productRepository.productDetail(productId)
-                val remaining = 1000L - startedAt.elapsedNow().inWholeMilliseconds
-                if (remaining > 0) delay(remaining)
-                if (!response.isSucceeded) throw CommonException(networkResponse = response)
+                println("ProductDetailViewModel: 请求商品详情...")
+                val response = productRepository.productDetailSync(productId)
+                
+                println("ProductDetailViewModel: 收到响应 - isSucceeded=${response.isSucceeded}, status=${response.status}")
+                
+                val elapsedTime = startTime.elapsedNow().inWholeMilliseconds
+                if (elapsedTime < 1000) {
+                    delay(1000 - elapsedTime)
+                }
+
+                if (!response.isSucceeded) {
+                    println("ProductDetailViewModel: 业务失败 - ${response.message}")
+                    _uiState.value = ProductDetailUiState.Error(
+                        IllegalStateException(response.message ?: "商品详情数据为空")
+                    )
+                    return@launch
+                }
+
                 val product = response.data
-                    ?: throw CommonException(networkResponse = response)
+                if (product == null) {
+                    println("ProductDetailViewModel: 数据为空")
+                    _uiState.value = ProductDetailUiState.Error(
+                        IllegalStateException(response.message ?: "商品详情数据为空")
+                    )
+                    return@launch
+                }
+
+                println("ProductDetailViewModel: 加载成功 - product.id=${product.id}, title=${product.title}")
+                data = product
                 _uiState.value = ProductDetailUiState.Success(product)
-                updateSpecState(product, selectFirstOptions(product.specs.orEmpty()), resetCount = true)
-            } catch (error: Throwable) {
-                _uiState.value = ProductDetailUiState.Error(error)
+
+                // 选中每个规格第一个
+                val specs = selectedSpecFirst(product.specs)
+                createProductSpecUiState(specs)
+            } catch (e: Exception) {
+                println("ProductDetailViewModel: 异常 - ${e.message}")
+                e.printStackTrace()
+                _uiState.value = ProductDetailUiState.Error(e)
             }
         }
     }
 
-    fun reloadData() = loadData()
-    fun showSpecDialog() { _isShowSpecDialog.value = true }
-    fun dismissSpecDialog() { _isShowSpecDialog.value = false }
-
-    fun onSubSpecSelected(specId: String, optionId: String) {
-        val product = (_uiState.value as? ProductDetailUiState.Success)?.product ?: return
-        val selected = _specUiState.value.specs.map { spec ->
-            if (spec.id != specId) spec else {
-                val option = spec.data.orEmpty().firstOrNull { it.id == optionId }
-                spec.copy(selectedSubId = option?.id, selectedSubTitle = option?.title)
-            }
-        }
-        updateSpecState(product, selected)
+    fun reloadData() {
+        _uiState.value = ProductDetailUiState.Loading
+        loadData()
     }
 
-    fun decrementCount() {
-        _specUiState.value = _specUiState.value.copy(count = (_specUiState.value.count - 1).coerceAtLeast(1))
-    }
-
-    fun incrementCount() {
-        _specUiState.value = _specUiState.value.copy(count = (_specUiState.value.count + 1).coerceAtMost(99))
-    }
-
-    private fun selectFirstOptions(specs: List<Spec>): List<Spec> = specs.map { spec ->
-        val first = spec.data.orEmpty().firstOrNull()
-        spec.copy(selectedSubId = first?.id, selectedSubTitle = first?.title)
-    }
-
-    private fun updateSpecState(product: Product, specs: List<Spec>, resetCount: Boolean = false) {
-        val title = specs.mapNotNull { it.selectedSubTitle }
-            .joinToString(" ")
-            .takeIf(String::isNotBlank)
-        val normalizedTitle = title?.normalizeStockTitle()
-        val stock = normalizedTitle?.let { selectedTitle ->
-            product.stocks.orEmpty().firstOrNull {
-                it.title.normalizeStockTitle() == selectedTitle
-            }
-        }
-        _specUiState.value = ProductSpecUiState(
-            productId = product.id,
-            icon = stock?.icon ?: product.icon,
-            price = stock?.price ?: product.price,
-            originPrice = stock?.originPrice ?: product.originPrice,
-            selectedStockId = stock?.id,
-            selectedStockTitle = stock?.title,
-            stocks = product.stocks.orEmpty(),
-            specs = specs,
-            count = if (resetCount) 1 else _specUiState.value.count,
+    /**
+     * 与 ClientApp 完全一致：dismissSpecDialog，然后设置 toConfirmOrderPage 触发导航
+     */
+    fun onConfirmOrderClick() {
+        dismissSpecDialog()
+        toConfirmOrderPage.value = ProductDetailOrderRequest(
+            productId = productId,
+            stockId = specUiState.value.selectedStockId,
+            count = specUiState.value.count,
         )
     }
 
-    /** 后端库存标题偶尔会包含重复空格或使用不同的空白字符。 */
-    private fun String?.normalizeStockTitle(): String = this.orEmpty()
-        .replace(Regex("\\s+"), " ")
-        .trim()
+    fun clearToConfirmOrder() {
+        toConfirmOrderPage.value = null
+    }
+
+    fun dismissSpecDialog() {
+        isShowSpecDialog.value = false
+    }
+
+    fun showSpecDialog() {
+        isShowSpecDialog.value = true
+    }
+
+    /**
+     * 与 ClientApp 完全一致：接入购物车 API
+     */
+    fun onAddCartClick() {
+        viewModelScope.launch {
+            val param = Cart(
+                productId = productId,
+                stockId = specUiState.value.selectedStockId,
+                count = specUiState.value.count,
+            )
+
+            try {
+                val response = cartRepository.addProductToCartSync(param)
+                if (response.isSucceeded) {
+                    dismissSpecDialog()
+                    tipSuccessMessage.value = "加入购物车成功"
+                } else {
+                    tipError.value = response.message ?: "加入购物车失败"
+                }
+            } catch (e: Exception) {
+                tipError.value = e.tipMessage()
+            }
+        }
+    }
+
+    /**
+     * 选择每个规格第一个（安全访问 getOrNull(0)）
+     */
+    private fun selectedSpecFirst(data: List<Spec>?): List<Spec>? {
+        return data?.map {
+            it.copy(
+                selectedSubId = it.data?.getOrNull(0)?.id,
+                selectedSubTitle = it.data?.getOrNull(0)?.title,
+            )
+        }
+    }
+
+    private fun createProductSpecUiState(specs: List<Spec>?) {
+        // 过滤 null 再拼接，避免 "null null" 导致 stock 匹配失败
+        val specString = specs
+            ?.mapNotNull { it.selectedSubTitle }
+            ?.takeIf { it.isNotEmpty() }
+            ?.joinToString(" ")
+
+        val stock = if (specString != null) {
+            data.stocks?.firstOrNull { it.title == specString }
+        } else {
+            data.stocks?.firstOrNull()
+        }
+
+        specUiState.value = ProductSpecUiState(
+            id = data.id,
+            icon = stock?.icon ?: data.icon.orEmpty(),
+            price = stock?.price ?: data.price,
+            originPrice = stock?.originPrice ?: data.originPrice,
+            selectedStockId = stock?.id,
+            selectedStockTitle = stock?.title,
+            stocks = data.stocks,
+            specs = specs,
+        )
+    }
+
+    fun onSubSpecSelected(specId: String, subSpecId: String, subSpecTitle: String) {
+        val specs = specUiState.value.specs!!.map {
+            if (it.id == specId) {
+                it.copy(
+                    selectedSubId = subSpecId,
+                    selectedSubTitle = subSpecTitle,
+                )
+            } else {
+                it
+            }
+        }
+        createProductSpecUiState(specs)
+    }
+
+    fun onDecrementCount() {
+        if (specUiState.value.count <= 1) return
+        specUiState.value = specUiState.value.copy(count = specUiState.value.count - 1)
+    }
+
+    fun onIncrementCount() {
+        if (specUiState.value.count >= 99) return
+        specUiState.value = specUiState.value.copy(count = specUiState.value.count + 1)
+    }
+
+    fun onShareTextClick() {
+        toShareText.value = data.title
+    }
+
+    fun onShareImageClick() {
+        val icon = data.icon?.takeIf(String::isNotBlank) ?: return
+        viewModelScope.launch {
+            runCatching {
+                Network.imageHttpClient.get(ResourceUtil.r(icon)).body<ByteArray>()
+            }.onSuccess {
+                toShareImage.value = it
+            }.onFailure {
+                tipError.value = it.tipMessage()
+            }
+        }
+    }
+
+    fun clearToShareText() {
+        toShareText.value = ""
+    }
+
+    fun clearToShareImage() {
+        toShareImage.value = null
+    }
+
+    fun clearTipSuccessMessage() {
+        tipSuccessMessage.value = null
+    }
+
+    fun clearTipError() {
+        tipError.value = null
+    }
 }

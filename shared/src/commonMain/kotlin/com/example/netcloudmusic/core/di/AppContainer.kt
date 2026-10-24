@@ -5,8 +5,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.netcloudmusic.core.data.local.createDataStore
 import com.example.netcloudmusic.core.data.repository.AddressRepository
+import com.example.netcloudmusic.core.data.repository.CartRepository
 import com.example.netcloudmusic.core.data.repository.CityRepository
 import com.example.netcloudmusic.core.data.repository.MeRepository
+import com.example.netcloudmusic.core.data.repository.OrderRepository
 import com.example.netcloudmusic.core.data.repository.ProductRepository
 import com.example.netcloudmusic.core.data.repository.ThemeRepository
 import com.example.netcloudmusic.core.data.repository.UserRepository
@@ -30,6 +32,10 @@ class AppContainer(
 ) {
     val productRepository: ProductRepository = ProductRepository(networkDataSource)
     val userRepository: UserRepository = UserRepository(networkDataSource)
+    val orderRepository: OrderRepository = OrderRepository(networkDataSource)
+    val categoryRepository: com.example.netcloudmusic.core.data.repository.CategoryRepository = com.example.netcloudmusic.core.data.repository.CategoryRepository(networkDataSource)
+    val commonRepository: com.example.netcloudmusic.core.data.repository.CommonRepository = com.example.netcloudmusic.core.data.repository.CommonRepository(networkDataSource)
+    val cartRepository: CartRepository = CartRepository(networkDataSource)
     val themeRepository: ThemeRepository = ThemeRepository(dataStore)
     val addressRepository: AddressRepository = AddressRepository(networkDataSource)
     val meRepository: MeRepository = MeRepository()

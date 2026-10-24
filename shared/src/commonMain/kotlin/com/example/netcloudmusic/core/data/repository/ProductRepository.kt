@@ -19,4 +19,15 @@ class ProductRepository(
 
     suspend fun productDetail(id: String): NetworkResponse<Product> =
         dataSource.productDetail(id)
+
+    /** 商品列表（同步方法，用于 Discovery） */
+    suspend fun productsSync(
+        page: Int,
+        size: Int,
+    ): NetworkResponse<NetworkPageData<Product>> =
+        dataSource.products(page = page.toString(), size = size.toString())
+
+    /** 商品详情（同步方法，用于 ProductDetail） */
+    suspend fun productDetailSync(id: String): NetworkResponse<Product> =
+        dataSource.productDetail(id)
 }

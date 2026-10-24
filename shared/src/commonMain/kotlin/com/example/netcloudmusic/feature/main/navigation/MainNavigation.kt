@@ -17,20 +17,24 @@ fun NavController.navigateToMain() {
 
 fun NavGraphBuilder.mainScreen(
     toProductDetail: (String) -> Unit = {},
+    toCategoryDetail: (com.example.netcloudmusic.feature.categorydetail.CategoryDetailArg) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     myComposable(route = MAIN_ROUTE) {
         MainRoute(
             toProductDetail = toProductDetail,
+            toCategoryDetail = toCategoryDetail,
             toLogin = toLogin,
             toSettings = toSettings,
             toProfile = toProfile,
             toReceivingAddress = toReceivingAddress,
             toAbout = toAbout,
+            toConfirmOrder = toConfirmOrder,
         )
     }
 }

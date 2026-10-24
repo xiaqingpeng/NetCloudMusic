@@ -1,4 +1,4 @@
-package com.example.netcloudmusic.util
+package com.example.netcloudmusic.core.util
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -31,23 +31,36 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainRoute(
     toProductDetail: (String) -> Unit = {},
+    toCategoryDetail: (com.example.netcloudmusic.feature.categorydetail.CategoryDetailArg) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toConfirmOrder: (List<String>) -> Unit = {},
 ) {
-    MainScreen(toProductDetail, toLogin, toSettings, toProfile, toReceivingAddress, toAbout)
+    MainScreen(
+        toProductDetail = toProductDetail,
+        toCategoryDetail = toCategoryDetail,
+        toLogin = toLogin,
+        toSettings = toSettings,
+        toProfile = toProfile,
+        toReceivingAddress = toReceivingAddress,
+        toAbout = toAbout,
+        toConfirmOrder = toConfirmOrder,
+    )
 }
 
 @Composable
 fun MainScreen(
     toProductDetail: (String) -> Unit = {},
+    toCategoryDetail: (com.example.netcloudmusic.feature.categorydetail.CategoryDetailArg) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     var currentDestination by remember { mutableStateOf(TopLevelDestination.DISCOVERY.route) }
     val pagerState = rememberPagerState { TopLevelDestination.entries.size }
@@ -64,11 +77,13 @@ fun MainScreen(
             modifier = Modifier.weight(1f),
             pagerState = pagerState,
             toProductDetail = toProductDetail,
+            toCategoryDetail = toCategoryDetail,
             toLogin = toLogin,
             toSettings = toSettings,
             toProfile = toProfile,
             toReceivingAddress = toReceivingAddress,
             toAbout = toAbout,
+            toConfirmOrder = toConfirmOrder,
         )
         MyNavigationBar(
             modifier = Modifier,
@@ -87,18 +102,23 @@ fun MainContent(
     modifier: Modifier,
     pagerState: PagerState,
     toProductDetail: (String) -> Unit = {},
+    toCategoryDetail: (com.example.netcloudmusic.feature.categorydetail.CategoryDetailArg) -> Unit = {},
     toLogin: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     HorizontalPager(state = pagerState, modifier = modifier.fillMaxWidth()) {
         when (it) {
             0 -> DiscoveryRoute(toProductDetail)
             1 -> ShortVideoRoute()
-            2 -> CategoryRoute()
-            3 -> CartRoute()
+            2 -> CategoryRoute(toCategoryDetail)
+            3 -> CartRoute(
+                toProductDetail = toProductDetail,
+                toConfirmOrder = toConfirmOrder,
+            )
             4 -> MeRoute(
                 toLogin = toLogin,
                 toSettings = toSettings,

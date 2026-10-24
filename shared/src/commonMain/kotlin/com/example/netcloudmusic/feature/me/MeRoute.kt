@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.QrCode
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -60,16 +58,13 @@ import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.core.model.User
 import com.example.netcloudmusic.feature.me.model.ButtonControl
 import com.example.netcloudmusic.feature.me.model.OrderButtonItem
-import com.example.netcloudmusic.util.ResourceUtil
+import com.example.netcloudmusic.core.util.ResourceUtil
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.default_avatar
 import netcloudmusic.shared.generated.resources.login_or_register
-import netcloudmusic.shared.generated.resources.logout
-import netcloudmusic.shared.generated.resources.me
 import netcloudmusic.shared.generated.resources.me_fans
 import netcloudmusic.shared.generated.resources.me_friend
 import netcloudmusic.shared.generated.resources.me_login_tip
-import netcloudmusic.shared.generated.resources.settings
 import netcloudmusic.shared.generated.resources.unknown_user
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

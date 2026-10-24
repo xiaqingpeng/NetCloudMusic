@@ -24,12 +24,14 @@ fun NavGraphBuilder.loginScreen(
     toBack: () -> Unit,
     finishAllLoginPages: () -> Unit,
     toRegister: () -> Unit = {},
+    toSetPassword: () -> Unit = {},
 ) {
     myComposable(LOGIN_ROUTE) {
         LoginRoute(
             toBack = toBack,
             finishAllLoginPages = finishAllLoginPages,
             toRegister = toRegister,
+            toSetPassword = toSetPassword,
         )
     }
 }
