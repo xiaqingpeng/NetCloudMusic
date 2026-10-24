@@ -160,14 +160,17 @@ fun ContentScrollView(
             modifier = Modifier.padding(top = SpaceExtraSmall),
         )
         
-        // 显示商品详情（暂时使用 Text 显示 HTML）
         data.detail?.let { detailHtml ->
-            Text(
-                text = detailHtml,
-                style = MaterialTheme.typography.bodyMedium,
+            ProductRichText(
+                html = detailHtml,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = SpaceExtraMedium, start = SpaceOuter, end = SpaceOuter, bottom = SpaceOuter),
+                    .padding(
+                    top = SpaceExtraMedium,
+//                    start = SpaceOuter,
+//                    end = SpaceOuter,
+                 bottom = SpaceExtraMedium,
+                    ),
             )
         }
     }
