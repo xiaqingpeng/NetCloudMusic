@@ -18,6 +18,7 @@ fun NavGraphBuilder.loginHomeScreen(
     toBack: () -> Unit,
     toLogin: () -> Unit = {},
     toCodeLogin: () -> Unit = {},
+    finishAllLoginPages: () -> Unit = {},
 ) {
     myComposable(
         route = LOGIN_HOME_ROUTE,
@@ -26,6 +27,11 @@ fun NavGraphBuilder.loginHomeScreen(
         popEnterTransition = { slideInHorizontally(tween(300)) { -it } },
         popExitTransition = { slideOutHorizontally(tween(300)) { it } },
     ) {
-        LoginHomeRoute(toBack, toLogin, toCodeLogin)
+        LoginHomeRoute(
+            toBack = toBack,
+            toLogin = toLogin,
+            toCodeLogin = toCodeLogin,
+            finishAllLoginPages = finishAllLoginPages,
+        )
     }
 }

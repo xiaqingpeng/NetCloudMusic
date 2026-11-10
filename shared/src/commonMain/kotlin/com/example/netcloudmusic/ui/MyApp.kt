@@ -12,6 +12,7 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.example.netcloudmusic.core.data.repository.ThemeMode
 import com.example.netcloudmusic.core.di.AppContainerProvider
+import com.example.netcloudmusic.core.util.Constant
 import com.example.netcloudmusic.feature.about.navigation.aboutScreen
 import com.example.netcloudmusic.feature.about.navigation.navigateToAbout
 import com.example.netcloudmusic.feature.address.AddressRefreshBus
@@ -31,6 +32,8 @@ import com.example.netcloudmusic.feature.forgetpassword.navigation.forgetPasswor
 import com.example.netcloudmusic.feature.forgetpassword.navigation.navigateToForgetPassword
 import com.example.netcloudmusic.feature.guide.navigation.guideScreen
 import com.example.netcloudmusic.feature.guide.navigation.navigateToGuide
+import com.example.netcloudmusic.feature.githubprofile.navigation.githubProfileScreen
+import com.example.netcloudmusic.feature.githubprofile.navigation.navigateToGithubProfile
 import com.example.netcloudmusic.feature.login.navigation.finishLogin
 import com.example.netcloudmusic.feature.login.navigation.loginScreen
 import com.example.netcloudmusic.feature.login.navigation.navigateToLogin
@@ -40,6 +43,10 @@ import com.example.netcloudmusic.feature.main.navigation.mainScreen
 import com.example.netcloudmusic.feature.main.navigation.navigateToMain
 import com.example.netcloudmusic.feature.pay.navigation.navigateToPay
 import com.example.netcloudmusic.feature.pay.navigation.payScreen
+import com.example.netcloudmusic.feature.order.navigation.navigateToOrder
+import com.example.netcloudmusic.feature.order.navigation.orderScreen
+import com.example.netcloudmusic.feature.orderdetail.navigation.navigateToOrderDetail
+import com.example.netcloudmusic.feature.orderdetail.navigation.orderDetailScreen
 import com.example.netcloudmusic.feature.productdetail.navigation.navigateToProductDetail
 import com.example.netcloudmusic.feature.productdetail.navigation.productDetailScreen
 import com.example.netcloudmusic.feature.profile.navigation.navigateToProfile
@@ -110,16 +117,15 @@ fun MyApp() {
                 toProductDetail = navController::navigateToProductDetail,
                 toCategoryDetail = navController::navigateToCategoryDetail,
                 toLogin = navController::navigateToLoginHome,
+                toGithubProfile = navController::navigateToGithubProfile,
                 toSettings = navController::navigateToSettings,
                 toProfile = navController::navigateToProfile,
                 toReceivingAddress = navController::navigateToAddress,
                 toAbout = navController::navigateToAbout,
+                toOrder = { style -> navController.navigateToOrder(style) },
                 toConfirmOrder = { cartIds ->
-                    // 从购物车跳转到确认订单页面，传递购物车 ID 列表
                     navController.navigateToConfirmOrder(
-                        ConfirmOrderParam(
-                            carts = cartIds,
-                        )
+                        ConfirmOrderParam(carts = cartIds)
                     )
                 },
             )
@@ -129,6 +135,7 @@ fun MyApp() {
                 toBack = { navController.popBackStack() },
                 toLogin = navController::navigateToLogin,
                 toCodeLogin = navController::navigateToCodeLogin,
+                finishAllLoginPages = navController::finishLogin,
             )
             loginScreen(
                 toBack = { navController.popBackStack() },
@@ -156,6 +163,9 @@ fun MyApp() {
                     SelectCityCallback.onResult = onCityResult
                     navController.navigateToSelectCity()
                 },
+            )
+            githubProfileScreen(
+                toBack = { navController.popBackStack() },
             )
 
             // ── 收货地址模块 ───────────────────────────────────────────────────
@@ -187,7 +197,6 @@ fun MyApp() {
             productDetailScreen(
                 toBack = { navController.popBackStack() },
                 toConfirmOrder = { orderRequest ->
-                    // 跳转到确认订单页面
                     navController.navigateToConfirmOrder(
                         ConfirmOrderParam(
                             productId = orderRequest.productId,
@@ -197,15 +206,13 @@ fun MyApp() {
                     )
                 },
             )
-            
-            // cartScreen 已经在 mainScreen 内部调用，这里删除重复定义
-            
+
             // ── 分类详情 ───────────────────────────────────────────────────────
             categoryDetailScreen(
                 toBack = { navController.popBackStack() },
                 toProductDetail = navController::navigateToProductDetail,
             )
-            
+
             // ── 订单流程 ───────────────────────────────────────────────────────
             confirmOrderScreen(
                 toBack = { navController.popBackStack() },
@@ -216,13 +223,34 @@ fun MyApp() {
             payScreen(
                 toBack = { navController.popBackStack() },
                 toOrderDetail = { orderId ->
-                    // TODO: 跳转到订单详情页（需要实现订单详情功能）
-                    navController.popBackStack()
+                    navController.navigateToOrderDetail(orderId)
+                },
+            )
+            orderScreen(
+                toBack = { navController.popBackStack() },
+                toOrderDetail = { orderId -> navController.navigateToOrderDetail(orderId) },
+                // style=10：从订单列表进入支付，支付完成后应返回而非再推一层详情
+                toPayOrder = { orderId ->
+                    navController.navigateToPay(orderId, style = Constant.VALUE10)
+                },
+            )
+            orderDetailScreen(
+                toBack = { navController.popBackStack() },
+                toPayOrder = { orderId ->
+                    navController.navigateToPay(orderId, style = Constant.VALUE10)
                 },
             )
 
             // ── 设置 ──────────────────────────────────────────────────────────
-            settingsScreen(toBack = { navController.popBackStack() })
+            settingsScreen(
+                toBack = { navController.popBackStack() },
+                // 设置页的退出登录会进入登录流程。先移除设置页，
+                // 否则登录成功后 finishLogin 只会弹出登录页，返回栈顶仍然是设置页。
+                toLogin = {
+                    navController.popBackStack()
+                    navController.navigateToLoginHome()
+                },
+            )
         }
     }
 }

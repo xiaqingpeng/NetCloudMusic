@@ -1,6 +1,7 @@
 package com.example.netcloudmusic.core.data.repository
 
 import com.example.netcloudmusic.core.model.BaseModel
+import com.example.netcloudmusic.core.model.GithubUser
 import com.example.netcloudmusic.core.model.RegisterResponse
 import com.example.netcloudmusic.core.model.SendCodeResponse
 import com.example.netcloudmusic.core.model.Session
@@ -30,7 +31,12 @@ class UserRepository(
     }
 
     init {
-        UserSessionStorage.loadSession()?.let { NetworkSession.session = it }
+        // github_ 前缀是 GitHub 本地登录标识，不是业务 session，不写入 NetworkSession
+        UserSessionStorage.loadSession()?.let { session ->
+            if (session.isNotBlank() && !session.startsWith("github_")) {
+                NetworkSession.session = session
+            }
+        }
         UserSessionStorage.loadUser()?.let { value ->
             runCatching { json.decodeFromString<User>(value) }.getOrNull()?.let { _userState.value = it }
         }
@@ -63,6 +69,27 @@ class UserRepository(
         val response = dataSource.loginByCode(user)
         response.data?.let { session -> persistSession(session) }
         emit(response)
+    }
+
+    // ── 第三方登录 ────────────────────────────────────────────────────────────
+
+    /**
+     * GitHub 本地登录。
+     * 没有业务服务端 session，写入 github_ 前缀本地标识；不要写入 NetworkSession。
+     */
+    fun loginWithGithub(githubUser: GithubUser, githubToken: String) {
+        val user = User(
+            id = "github_${githubUser.id}",
+            nickname = githubUser.name ?: githubUser.login,
+            icon = githubUser.avatarUrl,
+            detail = githubUser.bio,
+            email = githubUser.email,
+            style = 20,
+            token = githubToken,
+            openid = githubUser.login,
+        )
+        UserSessionStorage.save("github_${githubToken.take(20)}", json.encodeToString(user))
+        _userState.value = user
     }
 
     // ── 注册 ─────────────────────────────────────────────────────────────────
@@ -125,7 +152,10 @@ class UserRepository(
                 areaCode = user.areaCode,
             )
             _userState.value = updated
-            UserSessionStorage.save(NetworkSession.session ?: "", json.encodeToString(updated))
+            val localSession = UserSessionStorage.loadSession().orEmpty().ifBlank {
+                NetworkSession.session
+            }
+            UserSessionStorage.save(localSession, json.encodeToString(updated))
         }
         emit(response)
     }
@@ -136,7 +166,16 @@ class UserRepository(
         _userState.value = _userState.value
     }
 
-    fun isLoggedIn(): Boolean = !NetworkSession.session.isNullOrBlank()
+    /** 业务 session 非空，或本地已有用户（含 GitHub 本地登录）。 */
+    fun isLoggedIn(): Boolean =
+        NetworkSession.session.isNotBlank() || _userState.value != null
+
+    /**
+     * 是否具备商城业务登录态。
+     * 订单 / 支付 / 地址等接口依赖 Authorization，GitHub 本地登录不算。
+     */
+    fun hasBusinessSession(): Boolean =
+        NetworkSession.session.isNotBlank() && !NetworkSession.session.startsWith("github_")
 
     fun getLocalUser(): User? = _userState.value
 

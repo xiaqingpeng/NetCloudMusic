@@ -22,7 +22,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -30,6 +29,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import com.example.netcloudmusic.core.design.component.MyCenterTopAppBar
+import com.example.netcloudmusic.core.design.component.MyDatePickerDialog
 import com.example.netcloudmusic.core.design.component.MyErrorView
 import com.example.netcloudmusic.core.design.component.MyLoading
 import androidx.compose.runtime.Composable
@@ -51,8 +51,6 @@ import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.core.model.User
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.cancel
-import netcloudmusic.shared.generated.resources.confirm
-import netcloudmusic.shared.generated.resources.logout
 import netcloudmusic.shared.generated.resources.unknown_error
 import org.jetbrains.compose.resources.stringResource
 
@@ -72,7 +70,7 @@ fun ProfileRoute(
     val uiState by viewModel.uiState.collectAsState()
     val data by viewModel.data.collectAsState()
     val isShowGenderDialog by viewModel.isShowGenderDialog.collectAsState()
-    val isShowConfirmLogoutDialog by viewModel.isShowConfirmLogoutDialog.collectAsState()
+    val isShowBirthdayDialog by viewModel.isShowBirthdayDialog.collectAsState()
     val toast by viewModel.toast.collectAsState()
     val navigateBack by viewModel.navigateBack.collectAsState()
 
@@ -87,7 +85,7 @@ fun ProfileRoute(
         }
     }
 
-    // 保存成功或退出后返回
+    // 保存成功后返回
     LaunchedEffect(navigateBack) {
         if (navigateBack) {
             viewModel.consumeNavigateBack()
@@ -99,16 +97,15 @@ fun ProfileRoute(
         uiState = uiState,
         data = data,
         isShowGenderDialog = isShowGenderDialog,
-        isShowConfirmLogoutDialog = isShowConfirmLogoutDialog,
+        isShowBirthdayDialog = isShowBirthdayDialog,
         snackbarHostState = snackbarHostState,
         toBack = toBack,
         onUserValueChanged = viewModel::onUserValueChanged,
         showGenderDialog = viewModel::showGenderDialog,
         dismissGenderDialog = viewModel::dismissGenderDialog,
-        dismissConfirmLogoutDialog = viewModel::dismissConfirmLogoutDialog,
-        onLogoutClick = viewModel::showConfirmLogoutDialog,
+        showBirthdayDialog = viewModel::showBirthdayDialog,
+        dismissBirthdayDialog = viewModel::dismissBirthdayDialog,
         onSaveClick = viewModel::onSaveClick,
-        confirmLogout = viewModel::confirmLogout,
         toSelectCity = { toSelectCity { p, pc, c, cc, a, ac ->
             viewModel.onCitySelected(p, pc, c, cc, a, ac)
         } },
@@ -120,16 +117,15 @@ fun ProfileScreen(
     uiState: ProfileUiState = ProfileUiState.Loading,
     data: User = User(),
     isShowGenderDialog: Boolean = false,
-    isShowConfirmLogoutDialog: Boolean = false,
+    isShowBirthdayDialog: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     toBack: () -> Unit = {},
     onUserValueChanged: (User) -> Unit = {},
     showGenderDialog: () -> Unit = {},
     dismissGenderDialog: () -> Unit = {},
-    dismissConfirmLogoutDialog: () -> Unit = {},
-    onLogoutClick: () -> Unit = {},
+    showBirthdayDialog: () -> Unit = {},
+    dismissBirthdayDialog: () -> Unit = {},
     onSaveClick: () -> Unit = {},
-    confirmLogout: () -> Unit = {},
     toSelectCity: (() -> Unit) = {},
 ) {
     val isSaving = uiState == ProfileUiState.Saving
@@ -168,7 +164,7 @@ fun ProfileScreen(
                         data = data,
                         onUserValueChanged = onUserValueChanged,
                         showGenderDialog = showGenderDialog,
-                        onLogoutClick = onLogoutClick,
+                        showBirthdayDialog = showBirthdayDialog,
                         toSelectCity = toSelectCity,
                     )
                 }
@@ -188,18 +184,15 @@ fun ProfileScreen(
         )
     }
 
-    // 退出登录确认弹窗
-    if (isShowConfirmLogoutDialog) {
-        AlertDialog(
-            onDismissRequest = dismissConfirmLogoutDialog,
-            title = { Text(stringResource(Res.string.logout)) },
-            text = { Text("确认退出登录？") },
-            confirmButton = {
-                TextButton(onClick = confirmLogout) { Text(stringResource(Res.string.confirm)) }
+    // 生日日期选择弹窗
+    if (isShowBirthdayDialog) {
+        MyDatePickerDialog(
+            initialDate = data.birthday,
+            onConfirm = { dateStr ->
+                onUserValueChanged(data.copy(birthday = dateStr))
+                dismissBirthdayDialog()
             },
-            dismissButton = {
-                TextButton(onClick = dismissConfirmLogoutDialog) { Text(stringResource(Res.string.cancel)) }
-            },
+            onDismiss = dismissBirthdayDialog,
         )
     }
 }
@@ -213,7 +206,7 @@ private fun ProfileContentView(
     data: User,
     onUserValueChanged: (User) -> Unit,
     showGenderDialog: () -> Unit,
-    onLogoutClick: () -> Unit,
+    showBirthdayDialog: () -> Unit,
     toSelectCity: () -> Unit = {},
 ) {
     // 头像（只读展示，KMP 暂不支持图片选择器）
@@ -266,20 +259,12 @@ private fun ProfileContentView(
         modifier = Modifier.clickable { showGenderDialog() },
     )
 
-    // 生日（可编辑）
-    ProfileSettingRow {
-        ProfileSettingTitle("生日", Modifier.weight(1f))
-        BasicTextField(
-            value = data.birthday ?: "",
-            onValueChange = { onUserValueChanged(data.copy(birthday = it)) },
-            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.outline,
-            ),
-            singleLine = true,
-            modifier = Modifier.weight(1f),
-        )
-    }
+    // 生日（点击弹出日期选择器）
+    ProfileSettingValue(
+        title = "生日",
+        value = data.birthday ?: "请选择",
+        modifier = Modifier.clickable { showBirthdayDialog() },
+    )
 
     // 手机号（只读）
     ProfileSettingValue(title = "手机号", value = data.phone ?: "")
@@ -325,16 +310,6 @@ private fun ProfileContentView(
                 color = MaterialTheme.colorScheme.outline,
             )
         }
-    }
-
-    // 退出登录按钮
-    OutlinedButton(
-        onClick = onLogoutClick,
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 40.dp)
-            .fillMaxWidth(),
-    ) {
-        Text(stringResource(Res.string.logout))
     }
 }
 

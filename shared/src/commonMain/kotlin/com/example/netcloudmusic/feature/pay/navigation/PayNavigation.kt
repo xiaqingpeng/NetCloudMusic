@@ -1,5 +1,8 @@
 package com.example.netcloudmusic.feature.pay.navigation
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -19,7 +22,7 @@ const val STYLE = "style"
  * 跳转到支付界面
  *
  * @param orderId 订单id
- * @param style 来源，0:确认订单，10:订单详情
+ * @param style 来源，0:确认订单，10:订单详情/订单列表
  */
 fun NavController.navigateToPay(orderId: String, style: Int = Constant.VALUE0) {
     navigate("${PAY_ROUTE}/$orderId/${style}") {
@@ -44,13 +47,19 @@ fun NavGraphBuilder.payScreen(
         val style = backStackEntry.arguments
             ?.read { getIntOrNull(STYLE) }
             ?: Constant.VALUE0
-        
-        val viewModel = PayViewModel(
-            orderRepository = AppContainerProvider.instance.orderRepository,
-            orderId = orderId,
-            style = style,
+
+        val viewModel: PayViewModel = viewModel(
+            factory = viewModelFactory {
+                initializer {
+                    PayViewModel(
+                        orderRepository = AppContainerProvider.instance.orderRepository,
+                        orderId = orderId,
+                        style = style,
+                    )
+                }
+            },
         )
-        
+
         PayRoute(
             toBack = toBack,
             toOrderDetail = toOrderDetail,

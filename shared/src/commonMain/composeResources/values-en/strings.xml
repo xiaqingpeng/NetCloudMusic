@@ -38,6 +38,7 @@
     <string name="forgot_password">Forgot password</string>
     <string name="code_login">Login with verification code</string>
     <string name="username_login">Login with username and password</string>
+    <string name="github_login">Continue with GitHub</string>
     <string name="user_agreement_start">By logging in, you agree to </string>
     <string name="user_agreement">User Agreement</string>
     <string name="user_agreement_and"> and </string>
@@ -98,6 +99,7 @@
     <string name="wait_received">To Receive</string>
     <string name="wait_comment">To Review</string>
     <string name="refund_sales_service">Refund/After-sales</string>
+    <string name="refund">Refund</string>
     <string name="more_service">More Services</string>
     <string name="show_more">More</string>
 
@@ -111,4 +113,21 @@
     <string name="gender_secret">Prefer not to say</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
+    <string name="go_pay">Go to Pay</string>
+    <string name="total_count">Total %1$d items, amount:</string>
+    <string name="product_total_price">Product total</string>
+    <string name="shipping_fee">Shipping</string>
+    <string name="freight">Shipping</string>
+    <string name="free_freight">Free shipping</string>
+    <string name="coupon">Coupon</string>
+    <string name="no_available">Not available</string>
+    <string name="amount_pay">Amount payable</string>
+    <string name="order_time">Order time</string>
+    <string name="order_no">Order number</string>
+    <string name="order_source">Order source</string>
+    <string name="pay_platform">Payment platform</string>
+    <string name="pay_channel">Payment channel</string>
+    <string name="payment_before">Please complete payment before %1$s</string>
+    <string name="shipped_hint">Your package is on its way to you</string>
+    <string name="other_order_status">Other order status</string>
 </resources>

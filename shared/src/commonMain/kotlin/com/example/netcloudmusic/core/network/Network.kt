@@ -26,7 +26,7 @@ object Network {
     val imageHttpClient: HttpClient by lazy { createImageHttpClient() }
 }
 
-internal expect fun platformHttpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
+expect fun platformHttpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
 
 private fun createHttpClient(): HttpClient = platformHttpClient {
     install(DefaultRequest) {

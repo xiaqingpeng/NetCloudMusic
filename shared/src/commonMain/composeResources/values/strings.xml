@@ -38,6 +38,7 @@
     <string name="forgot_password">忘记密码</string>
     <string name="code_login">验证码登录</string>
     <string name="username_login">用户名和密码登录</string>
+    <string name="github_login">使用 GitHub 登录</string>
     <string name="user_agreement_start">登录即表示你同意</string>
     <string name="user_agreement">《用户协议》</string>
     <string name="user_agreement_and">和</string>
@@ -99,6 +100,7 @@
     <string name="wait_received">待收货</string>
     <string name="wait_comment">待评价</string>
     <string name="refund_sales_service">退款/售后</string>
+    <string name="refund">退款</string>
     <string name="more_service">更多服务</string>
     <string name="show_more">查看更多</string>
 
@@ -119,6 +121,22 @@
     <string name="resend_count">%1$ds后重新发送</string>
     <string name="pay_order">支付订单</string>
     <string name="go_pay">去支付</string>
+    <string name="total_count">共%1$d件，合计：</string>
+    <string name="product_total_price">商品总价</string>
+    <string name="shipping_fee">运费</string>
+    <string name="freight">运费</string>
+    <string name="free_freight">包邮</string>
+    <string name="coupon">优惠券</string>
+    <string name="no_available">暂无可用</string>
+    <string name="amount_pay">应付金额</string>
+    <string name="order_time">下单时间</string>
+    <string name="order_no">订单编号</string>
+    <string name="order_source">订单来源</string>
+    <string name="pay_platform">支付平台</string>
+    <string name="pay_channel">支付渠道</string>
+    <string name="payment_before">请在%1$s之前完成支付</string>
+    <string name="shipped_hint">你的包裹正向你飞奔而来</string>
+    <string name="other_order_status">其他订单状态</string>
     <string name="alipay">支付宝</string>
     <string name="wechat">微信支付</string>
     <string name="huabei_stages">花呗分期</string>

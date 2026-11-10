@@ -25,7 +25,10 @@ class ConfirmOrderViewModel(
     // Route 层通过 LaunchedEffect(viewModel.toPay.value) 监听
     val toPay = mutableStateOf<String?>(null)
 
-    // 与 ClientApp BaseViewModel 保持一致
+    // 错误提示（字符串，替代旧版 R.string 资源 ID）
+    val tipError = MutableStateFlow<String?>(null)
+
+    // 与 ClientApp BaseViewModel 保持一致（保留兼容性）
     val tipErrorRes = MutableStateFlow<Int?>(null)
 
     private var addressId: String? = null
@@ -41,7 +44,7 @@ class ConfirmOrderViewModel(
             addressId = p.addressId,
             carts = p.carts,
             count = p.count,
-            source = Constant.IOS,
+            source = Constant.ANDROID,
         )
         orderRepository.confirmOrder(req)
             .map { response ->
@@ -71,8 +74,7 @@ class ConfirmOrderViewModel(
     fun onPrimaryClick() {
         val addressId = param.value.addressId ?: addressId
         if (addressId.isNullOrEmpty()) {
-            // TODO: 使用资源ID
-            tipErrorRes.value = 0
+            tipError.value = "请选择收货地址"
             return
         }
 
@@ -84,13 +86,13 @@ class ConfirmOrderViewModel(
                     stockId = param.value.stockId,
                     count = param.value.count,
                     carts = param.value.carts,
-                    source = Constant.IOS,
+                    source = Constant.ANDROID,
                 )
             ).collectLatest {
                 if (it.isSucceeded) {
                     toPay.value = it.data!!.id
                 } else {
-                    // TODO: 提示下单失败错误
+                    tipError.value = it.message ?: "下单失败"
                 }
             }
         }

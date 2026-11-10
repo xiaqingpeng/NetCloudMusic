@@ -85,8 +85,8 @@ fun DiscoveryRoute(
 @Composable
 fun DiscoveryScreen(
     uiState: DiscoveryUiState = DiscoveryUiState(),
-    toggleDrawer: () -> Unit = {},
     toSearch: () -> Unit = {},
+    toggleDrawer: () -> Unit = {},
     toProductDetail: (String) -> Unit = {},
     toUri: (String) -> Unit = {},
     loadData: () -> Unit = {},
@@ -95,7 +95,10 @@ fun DiscoveryScreen(
 ) {
     Scaffold(
         topBar = {
-            DiscoveryTopBar(toggleDrawer, toSearch)
+            DiscoveryTopBar(
+                toggleDrawer = toggleDrawer,
+                toSearch = toSearch,
+            )
         },
         // 排除底部导航栏边距
         contentWindowInsets = ScaffoldDefaults
@@ -121,14 +124,16 @@ fun DiscoveryScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DiscoveryTopBar(toggleDrawer: () -> Unit, toSearch: () -> Unit) {
+private fun DiscoveryTopBar(
+    toggleDrawer: () -> Unit,
+    toSearch: () -> Unit,
+) {
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = toggleDrawer) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = null,
-                    modifier = Modifier.size(36.dp),
+                    contentDescription = "打开抽屉",
                 )
             }
         },

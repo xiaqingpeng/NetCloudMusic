@@ -23,8 +23,8 @@ class ProfileViewModel(
     private val _isShowGenderDialog = MutableStateFlow(false)
     val isShowGenderDialog: StateFlow<Boolean> = _isShowGenderDialog.asStateFlow()
 
-    private val _isShowConfirmLogoutDialog = MutableStateFlow(false)
-    val isShowConfirmLogoutDialog: StateFlow<Boolean> = _isShowConfirmLogoutDialog.asStateFlow()
+    private val _isShowBirthdayDialog = MutableStateFlow(false)
+    val isShowBirthdayDialog: StateFlow<Boolean> = _isShowBirthdayDialog.asStateFlow()
 
     private val _toast = MutableStateFlow<ProfileToastEvent?>(null)
     val toast: StateFlow<ProfileToastEvent?> = _toast.asStateFlow()
@@ -112,12 +112,6 @@ class ProfileViewModel(
 
     fun showGenderDialog() { _isShowGenderDialog.value = true }
     fun dismissGenderDialog() { _isShowGenderDialog.value = false }
-    fun showConfirmLogoutDialog() { _isShowConfirmLogoutDialog.value = true }
-    fun dismissConfirmLogoutDialog() { _isShowConfirmLogoutDialog.value = false }
-
-    fun confirmLogout() {
-        dismissConfirmLogoutDialog()
-        userRepository.logout()
-        _navigateBack.value = true
-    }
+    fun showBirthdayDialog() { _isShowBirthdayDialog.value = true }
+    fun dismissBirthdayDialog() { _isShowBirthdayDialog.value = false }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -23,14 +24,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.dp
 import com.example.netcloudmusic.core.design.component.MyErrorView
 import com.example.netcloudmusic.core.design.component.MyLoadMoreLoading
 import com.example.netcloudmusic.core.design.component.MyLoading
+import com.example.netcloudmusic.core.design.component.MyLoadingText
 import com.example.netcloudmusic.core.design.theme.SpaceExtraMedium
 import com.example.netcloudmusic.core.extension.isScrollingToEnd
 import com.example.netcloudmusic.core.util.Constant
 import com.example.netcloudmusic.feature.discovery.DiscoveryUiState
 import com.example.netcloudmusic.feature.discovery.LoadMoreState
+import com.example.netcloudmusic.feature.discovery.RefreshResult
 import com.example.netcloudmusic.feature.product.component.ItemProductGrid
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.empty_data
@@ -66,7 +71,7 @@ fun DiscoveryContentView(
             uiState.isInitialLoading -> {
                 MyLoading(Modifier.fillMaxSize())
             }
-            
+
             uiState.topDatum.isEmpty() && uiState.datum.isEmpty() -> {
                 MyErrorView(
                     message = uiState.errorMessage ?: stringResource(Res.string.empty_data),
@@ -74,7 +79,7 @@ fun DiscoveryContentView(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            
+
             else -> {
                 PullToRefreshBox(
                     state = rememberPullToRefreshState(),
@@ -100,6 +105,34 @@ fun DiscoveryContentView(
 
                     if (isLoadMoreTriggered) {
                         LaunchedEffect(Unit) { loadMore() }
+                    }
+
+                    // ── 刷新结果 overlay ───────────────────────────────────
+                    when (uiState.refreshResult) {
+                        RefreshResult.Success -> {
+                            Box(
+                                contentAlignment = Alignment.BottomCenter,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                androidx.compose.material3.Snackbar(
+                                    modifier = Modifier.padding(16.dp)
+                                ) { Text("刷新成功") }
+                            }
+                        }
+                        RefreshResult.Error -> {
+                            Box(
+                                contentAlignment = Alignment.BottomCenter,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                androidx.compose.material3.Snackbar(
+                                    modifier = Modifier.padding(16.dp)
+                                ) {
+                                    Text(uiState.errorMessage ?: "刷新失败")
+                                }
+                            }
+                            LaunchedEffect(Unit) { clearError() }
+                        }
+                        RefreshResult.Idle -> Unit
                     }
                 }
             }
@@ -171,3 +204,4 @@ private fun LazyGridScope.loadMoreItem(
         }
     }
 }
+

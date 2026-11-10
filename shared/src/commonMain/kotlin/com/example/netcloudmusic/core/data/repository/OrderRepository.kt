@@ -16,30 +16,30 @@ import kotlinx.coroutines.flow.flow
 class OrderRepository(
     private val dataSource: NetworkDataSource,
 ) {
-    /**
-     * 预览订单（确认订单页面）
-     */
+    /** 预览订单（确认订单页面）*/
     fun confirmOrder(request: OrderRequest): Flow<NetworkResponse<ConfirmOrderResponse>> = flow {
         emit(dataSource.confirmOrder(request))
     }
 
-    /**
-     * 创建订单
-     */
+    /** 创建订单 */
     fun createOrder(request: OrderRequest): Flow<NetworkResponse<Order>> = flow {
         emit(dataSource.createOrder(request))
     }
 
-    /**
-     * 订单详情
-     */
+    /** 订单详情（Flow） */
     fun orderDetail(orderId: String): Flow<NetworkResponse<Order>> = flow {
         emit(dataSource.orderDetail(orderId))
     }
 
-    /**
-     * 请求支付
-     */
+    /** 订单详情（挂起，直接返回） */
+    suspend fun orderDetailSync(orderId: String): NetworkResponse<Order> =
+        dataSource.orderDetail(orderId)
+
+    /** 订单列表 */
+    suspend fun orders(params: Map<String, String> = emptyMap()): NetworkResponse<com.example.netcloudmusic.core.model.response.NetworkPageData<Order>> =
+        dataSource.orders(params)
+
+    /** 请求支付 */
     fun orderPay(request: PayRequest): Flow<NetworkResponse<PayResponse>> = flow {
         emit(dataSource.orderPay(request))
     }

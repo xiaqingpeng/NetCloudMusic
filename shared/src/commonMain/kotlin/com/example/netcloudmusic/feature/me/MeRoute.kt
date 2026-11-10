@@ -75,10 +75,12 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MeRoute(
     toLogin: () -> Unit = {},
+    toGithubProfile: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toOrder: (Int) -> Unit = {},
 ) {
     val viewModel: MeViewModel = viewModel(
         factory = viewModelFactory {
@@ -86,6 +88,7 @@ fun MeRoute(
                 MeViewModel(
                     AppContainerProvider.instance.userRepository,
                     AppContainerProvider.instance.meRepository,
+                    AppContainerProvider.instance.githubRepository,
                 )
             }
         },
@@ -94,11 +97,21 @@ fun MeRoute(
     MeScreen(
         state = state,
         toLogin = toLogin,
+        toGithubProfile = toGithubProfile,
         onLogout = viewModel::logout,
         toSettings = toSettings,
         toProfile = toProfile,
         toReceivingAddress = toReceivingAddress,
         toAbout = toAbout,
+        toOrder = { style ->
+            // 订单接口依赖商城业务 session（Authorization）。
+            // GitHub 本地登录只有 userState，没有 NetworkSession，直接进订单会加载失败。
+            if (AppContainerProvider.instance.userRepository.hasBusinessSession()) {
+                toOrder(style)
+            } else {
+                toLogin()
+            }
+        },
         orderButtons = viewModel.getOrderButtons(),
         serviceButtons = viewModel.getMoreServiceButtons(),
     )
@@ -109,11 +122,13 @@ fun MeRoute(
 fun MeScreen(
     state: MeUiState = MeUiState(),
     toLogin: () -> Unit = {},
+    toGithubProfile: () -> Unit = {},
     onLogout: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toOrder: (Int) -> Unit = {},
     orderButtons: List<OrderButtonItem> = emptyList(),
     serviceButtons: List<ButtonControl> = emptyList(),
 ) {
@@ -165,7 +180,10 @@ fun MeScreen(
                     .padding(horizontal = SpaceExtraOuter),
             ) {
                 if (state.isLoggedIn && state.user != null) {
-                    MeUserProfile(user = state.user, toProfile = toProfile)
+                    MeUserProfile(
+                        user = state.user,
+                        toProfile = if (state.user.style == 20) toGithubProfile else toProfile,
+                    )
                 } else {
                     MeDefaultProfile(toLogin = toLogin)
                 }
@@ -183,6 +201,7 @@ fun MeScreen(
             // ── 我的订单卡片
             MeOrderInfo(
                 orderButtons = orderButtons,
+                toOrder = toOrder,
                 modifier = Modifier.padding(horizontal = SpaceExtraOuter),
             )
 
@@ -199,7 +218,7 @@ fun MeScreen(
                         "setting"           -> toSettings()
                         "receiving_address" -> toReceivingAddress()
                         "about"             -> toAbout()
-                        "my_profile"        -> toProfile()
+                        "my_profile"        -> if (state.user?.style == 20) toGithubProfile() else toProfile()
                     }
                 },
             )
@@ -396,6 +415,7 @@ private fun MeCountDivider() {
 @Composable
 private fun MeOrderInfo(
     orderButtons: List<OrderButtonItem>,
+    toOrder: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier.fillMaxWidth(), shape = MaterialTheme.shapes.small) {
@@ -411,7 +431,9 @@ private fun MeOrderInfo(
                     modifier = Modifier.weight(1f),
                 )
                 Row(
-                    modifier = Modifier.padding(vertical = SpaceLarge),
+                    modifier = Modifier
+                        .padding(vertical = SpaceLarge)
+                        .clickable { toOrder(0) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -434,11 +456,22 @@ private fun MeOrderInfo(
                     .background(LocalDividerColor.current),
             )
             Row {
-                orderButtons.forEachIndexed { _, item ->
+                orderButtons.forEachIndexed { index, item ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .weight(1f)
+                            .clickable {
+                                // 订单页 Tab：0全部 / 1待付款 / 2待收货 / 3待评价
+                                // 「退款/售后」暂无独立 Tab，先进入全部订单，避免 style=4 越界崩溃
+                                val style = when (index) {
+                                    0 -> 1 // 待付款
+                                    1 -> 2 // 待收货
+                                    2 -> 3 // 待评价
+                                    else -> 0 // 退款/售后 → 全部
+                                }
+                                toOrder(style)
+                            }
                             .padding(vertical = SpaceLarge),
                     ) {
                         // 使用真实图标资源

@@ -91,6 +91,9 @@ interface NetworkDataSource {
     /** 订单详情 */
     suspend fun orderDetail(orderId: String): NetworkResponse<com.example.netcloudmusic.core.model.Order>
 
+    /** 订单列表（支持 status/page 等过滤参数） */
+    suspend fun orders(params: Map<String, String> = emptyMap()): NetworkResponse<NetworkPageData<com.example.netcloudmusic.core.model.Order>>
+
     /** 请求支付 */
     suspend fun orderPay(request: com.example.netcloudmusic.core.model.PayRequest): NetworkResponse<com.example.netcloudmusic.core.model.PayResponse>
 

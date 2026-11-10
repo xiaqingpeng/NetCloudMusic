@@ -7,4 +7,7 @@ package com.example.netcloudmusic.core.util
  */
 expect object SuperDateUtil {
     fun currentYear(): Int
+    /** 将 ISO-8601 时间字符串格式化为 "yyyy-MM-dd HH:mm:ss" */
+    fun yyyyMMddHHmmss(value: String?): String
+    fun paymentDeadline(value: String?): String
 }

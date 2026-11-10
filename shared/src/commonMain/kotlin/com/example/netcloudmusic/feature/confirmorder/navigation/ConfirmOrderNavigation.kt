@@ -1,5 +1,8 @@
 package com.example.netcloudmusic.feature.confirmorder.navigation
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -49,10 +52,16 @@ fun NavGraphBuilder.confirmOrderScreen(
             ?: ""
         val decoded = Base64.UrlSafe.decode(encoded).decodeToString()
         val param = Json.decodeFromString<ConfirmOrderParam>(decoded)
-        
-        val viewModel = ConfirmOrderViewModel(
-            orderRepository = AppContainerProvider.instance.orderRepository,
-            initialParam = param,
+
+        val viewModel: ConfirmOrderViewModel = viewModel(
+            factory = viewModelFactory {
+                initializer {
+                    ConfirmOrderViewModel(
+                        orderRepository = AppContainerProvider.instance.orderRepository,
+                        initialParam = param,
+                    )
+                }
+            },
         )
 
         ConfirmOrderRoute(

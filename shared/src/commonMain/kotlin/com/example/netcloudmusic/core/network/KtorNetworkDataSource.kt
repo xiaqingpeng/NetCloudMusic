@@ -224,6 +224,13 @@ class KtorNetworkDataSource(
         }.body()
     }
 
+    override suspend fun orders(params: Map<String, String>): NetworkResponse<NetworkPageData<com.example.netcloudmusic.core.model.Order>> {
+        // 与 Compose NetCloudMusic 保持一致：订单列表接口是 v1/orders/page，不是 list
+        return httpClient.get("${Config.ENDPOINT}v1/orders/page") {
+            params.forEach { (k, v) -> parameter(k, v) }
+        }.body()
+    }
+
     override suspend fun orderPay(request: com.example.netcloudmusic.core.model.PayRequest): NetworkResponse<com.example.netcloudmusic.core.model.PayResponse> {
         return httpClient.post("${Config.ENDPOINT}v1/orders/pay") {
             contentType(ContentType.Application.Json)

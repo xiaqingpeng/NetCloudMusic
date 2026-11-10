@@ -3,6 +3,7 @@ package com.example.netcloudmusic.feature.me
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.netcloudmusic.core.data.repository.MeRepository
+import com.example.netcloudmusic.core.data.repository.GithubRepository
 import com.example.netcloudmusic.core.data.repository.UserRepository
 import com.example.netcloudmusic.core.model.User
 import com.example.netcloudmusic.feature.me.model.ButtonControl
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
 class MeViewModel(
     private val userRepository: UserRepository,
     private val meRepository: MeRepository,
+    private val githubRepository: GithubRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MeUiState())
@@ -30,7 +32,10 @@ class MeViewModel(
     fun getOrderButtons(): List<OrderButtonItem> = meRepository.getOrderButtons()
 
     fun refresh() = userRepository.refreshUserState()
-    fun logout() = userRepository.logout()
+    fun logout() {
+        githubRepository.logout()
+        userRepository.logout()
+    }
 }
 
 data class MeUiState(

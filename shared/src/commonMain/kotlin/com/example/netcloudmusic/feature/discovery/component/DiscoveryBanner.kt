@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,7 @@ import com.example.netcloudmusic.core.design.component.HorizontalPagerIndicator
 import com.example.netcloudmusic.core.design.theme.SpaceMedium
 import com.example.netcloudmusic.core.model.Ad
 import com.example.netcloudmusic.core.util.ResourceUtil
+import kotlinx.coroutines.delay
 
 /**
  * 首页 Banner 轮播图
@@ -63,6 +65,18 @@ fun DiscoveryBanner(
                 pageCount = data.size,
                 modifier = Modifier.padding(SpaceMedium),
             )
+
+            // 轮播页进入组合后每 3 秒自动切换一次。LaunchedEffect 会在页面离开
+            // 或广告数量变化时自动取消旧协程，避免重复启动多个轮播任务。
+            if (data.size > 1) {
+                LaunchedEffect(pagerState, data.size) {
+                    while (true) {
+                        delay(3_000L)
+                        val nextPage = (pagerState.currentPage + 1) % data.size
+                        pagerState.animateScrollToPage(nextPage)
+                    }
+                }
+            }
         }
     }
 }

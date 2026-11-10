@@ -11,8 +11,11 @@ fun NavController.navigateToSettings() {
     navigate(SETTINGS_ROUTE)
 }
 
-fun NavGraphBuilder.settingsScreen(toBack: () -> Unit) {
+fun NavGraphBuilder.settingsScreen(
+    toBack: () -> Unit,
+    toLogin: () -> Unit = {},
+) {
     myComposable(route = SETTINGS_ROUTE) {
-        SettingsRoute(toBack = toBack)
+        SettingsRoute(toBack = toBack, toLogin = toLogin)
     }
 }

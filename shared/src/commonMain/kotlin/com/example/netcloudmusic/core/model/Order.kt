@@ -88,6 +88,18 @@ data class Order(
     val isShipped: Boolean
         get() = status == Constant.WAIT_SHIPPED
 
+    /** 状态文字描述 */
+    val statusText: String
+        get() = when (status) {
+            Constant.WAIT_PAY -> "待付款"
+            Constant.CLOSE -> "已关闭"
+            Constant.WAIT_SHIPPED -> "待发货"
+            Constant.WAIT_RECEIVED -> "待收货"
+            Constant.WAIT_COMMENT -> "待评价"
+            Constant.COMPLETE -> "已完成"
+            else -> "未知状态"
+        }
+
     /**
      * 支付渠道格式化
      */

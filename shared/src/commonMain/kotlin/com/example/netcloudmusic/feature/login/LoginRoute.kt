@@ -13,8 +13,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
@@ -225,7 +225,7 @@ private fun PasswordTextField(
             if (value.isNotEmpty()) {
                 IconButton(onClick = { visible = !visible }) {
                     Icon(
-                        if (visible) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        if (visible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                     )

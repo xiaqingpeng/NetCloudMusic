@@ -19,10 +19,12 @@ fun NavGraphBuilder.mainScreen(
     toProductDetail: (String) -> Unit = {},
     toCategoryDetail: (com.example.netcloudmusic.feature.categorydetail.CategoryDetailArg) -> Unit = {},
     toLogin: () -> Unit = {},
+    toGithubProfile: () -> Unit = {},
     toSettings: () -> Unit = {},
     toProfile: () -> Unit = {},
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
+    toOrder: (Int) -> Unit = {},
     toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     myComposable(route = MAIN_ROUTE) {
@@ -30,10 +32,12 @@ fun NavGraphBuilder.mainScreen(
             toProductDetail = toProductDetail,
             toCategoryDetail = toCategoryDetail,
             toLogin = toLogin,
+            toGithubProfile = toGithubProfile,
             toSettings = toSettings,
             toProfile = toProfile,
             toReceivingAddress = toReceivingAddress,
             toAbout = toAbout,
+            toOrder = toOrder,
             toConfirmOrder = toConfirmOrder,
         )
     }

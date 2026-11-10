@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -24,11 +25,27 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.netcloudmusic"
+        applicationId = "com.quick.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        val localProps = Properties().also { props ->
+            val f = rootProject.file("local.properties")
+            if (f.exists()) props.load(f.inputStream())
+        }
+        val githubClientId = localProps.getProperty("github.clientId")
+            ?: System.getenv("GITHUB_CLIENT_ID")
+            ?: ""
+        val githubClientSecret = localProps.getProperty("github.clientSecret")
+            ?: System.getenv("GITHUB_CLIENT_SECRET")
+            ?: ""
+        buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientId\"")
+        buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecret\"")
+
+        manifestPlaceholders["githubCallbackScheme"] = "netcloudmusic"
+        manifestPlaceholders["githubCallbackHost"] = "github-callback"
     }
     flavorDimensions += listOf("env", "channel")
     productFlavors {

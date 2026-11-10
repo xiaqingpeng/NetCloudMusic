@@ -7,6 +7,7 @@ import com.example.netcloudmusic.core.data.local.createDataStore
 import com.example.netcloudmusic.core.data.repository.AddressRepository
 import com.example.netcloudmusic.core.data.repository.CartRepository
 import com.example.netcloudmusic.core.data.repository.CityRepository
+import com.example.netcloudmusic.core.data.repository.GithubRepository
 import com.example.netcloudmusic.core.data.repository.MeRepository
 import com.example.netcloudmusic.core.data.repository.OrderRepository
 import com.example.netcloudmusic.core.data.repository.ProductRepository
@@ -32,6 +33,7 @@ class AppContainer(
 ) {
     val productRepository: ProductRepository = ProductRepository(networkDataSource)
     val userRepository: UserRepository = UserRepository(networkDataSource)
+    val githubRepository: GithubRepository = GithubRepository(userRepository)
     val orderRepository: OrderRepository = OrderRepository(networkDataSource)
     val categoryRepository: com.example.netcloudmusic.core.data.repository.CategoryRepository = com.example.netcloudmusic.core.data.repository.CategoryRepository(networkDataSource)
     val commonRepository: com.example.netcloudmusic.core.data.repository.CommonRepository = com.example.netcloudmusic.core.data.repository.CommonRepository(networkDataSource)

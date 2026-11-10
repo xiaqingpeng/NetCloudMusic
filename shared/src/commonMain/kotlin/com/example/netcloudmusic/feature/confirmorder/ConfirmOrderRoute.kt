@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,14 +22,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
@@ -36,6 +41,7 @@ import com.example.netcloudmusic.core.design.component.MyCenterTopAppBar
 import com.example.netcloudmusic.core.model.Address
 import com.example.netcloudmusic.core.model.Cart
 import com.example.netcloudmusic.core.util.ResourceUtil
+import com.example.netcloudmusic.core.util.formatPrice
 import netcloudmusic.shared.generated.resources.Res
 import netcloudmusic.shared.generated.resources.placeholder
 import netcloudmusic.shared.generated.resources.select_address
@@ -55,7 +61,10 @@ fun ConfirmOrderRoute(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val tipErrorRes by viewModel.tipErrorRes.collectAsState()
+    val tipError by viewModel.tipError.collectAsState()
     val toPay = viewModel.toPay.value
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // 监听地址选择结果
     LaunchedEffect(navController) {
@@ -80,10 +89,17 @@ fun ConfirmOrderRoute(
         }
     }
 
-    // 错误提示
+    // 错误提示 — 字符串
+    LaunchedEffect(tipError) {
+        tipError?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.tipError.value = null
+        }
+    }
+
+    // 错误提示 — 旧 ResourceId 兼容
     LaunchedEffect(tipErrorRes) {
         tipErrorRes?.let {
-            // TODO: 显示错误提示
             viewModel.clearTipErrorRes()
         }
     }
@@ -93,6 +109,7 @@ fun ConfirmOrderRoute(
         toBack = toBack,
         toSelectAddress = toSelectAddress,
         onPrimaryClick = viewModel::onPrimaryClick,
+        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -103,6 +120,7 @@ fun ConfirmOrderScreen(
     toBack: () -> Unit = {},
     toSelectAddress: () -> Unit = {},
     onPrimaryClick: () -> Unit = {},
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     Scaffold(
         topBar = {
@@ -111,16 +129,45 @@ fun ConfirmOrderScreen(
                 title = "确认订单",
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             when (uiState) {
                 is ConfirmOrderUiState.Success -> {
-                    Button(
-                        onClick = onPrimaryClick,
+                    val totalCount = uiState.confirmOrder.carts.sumOf { it.count }
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .navigationBarsPadding()
                     ) {
-                        Text("提交订单 ￥${uiState.confirmOrder.priceFloat}")
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "共 $totalCount 件",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "合计：",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                text = "¥${formatPrice(uiState.confirmOrder.priceFloat)}",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Button(
+                            onClick = onPrimaryClick,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("提交订单")
+                        }
                     }
                 }
                 else -> {}
@@ -201,22 +248,35 @@ fun ConfirmOrderContent(
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("商品总价", style = MaterialTheme.typography.bodyMedium)
-                Text("￥${confirmOrder.totalPriceFloat}", style = MaterialTheme.typography.bodyMedium)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("实付金额", style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                Text("￥${confirmOrder.priceFloat}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-            }
+            PriceRow("商品总价", "¥${formatPrice(confirmOrder.totalPriceFloat)}")
+            Spacer(Modifier.height(8.dp))
+            PriceRow("运费", "免运费")
+            Spacer(Modifier.height(8.dp))
+            PriceRow("优惠券", "暂无可用")
+            Spacer(Modifier.height(8.dp))
+            PriceRow(
+                title = "实付金额",
+                value = "¥${formatPrice(confirmOrder.priceFloat)}",
+                titleStyle = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                valueStyle = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary),
+            )
         }
+    }
+}
+
+@Composable
+private fun PriceRow(
+    title: String,
+    value: String,
+    titleStyle: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyMedium,
+    valueStyle: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyMedium,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(title, style = titleStyle)
+        Text(value, style = valueStyle)
     }
 }
 
@@ -329,6 +389,18 @@ fun ConfirmOrderCartItem(data: Cart, modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun ProductContainer(data: List<Cart>, modifier: Modifier = Modifier) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(1.dp),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        data.forEach { cart ->
+            ConfirmOrderCartItem(data = cart)
         }
     }
 }
