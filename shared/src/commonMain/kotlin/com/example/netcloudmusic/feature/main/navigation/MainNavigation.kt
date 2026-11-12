@@ -3,7 +3,6 @@ package com.example.netcloudmusic.feature.main.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.example.netcloudmusic.feature.main.MainRoute
-import com.example.netcloudmusic.feature.splash.navigation.SPLASH_ROUTE
 import com.example.netcloudmusic.ui.navigation.myComposable
 
 const val MAIN_ROUTE = "main"
@@ -11,7 +10,10 @@ const val MAIN_ROUTE = "main"
 fun NavController.navigateToMain() {
     navigate(MAIN_ROUTE) {
         launchSingleTop = true
-        popUpTo(SPLASH_ROUTE)
+        // 清空启动/引导等前置页，避免返回
+        popUpTo(0) {
+            inclusive = true
+        }
     }
 }
 

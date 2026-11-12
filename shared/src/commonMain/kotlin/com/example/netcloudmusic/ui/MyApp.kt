@@ -108,8 +108,12 @@ fun MyApp() {
                 toMain = navController::navigateToMain,
             )
             guideScreen(
-                toBack = navController::popBackStack,
                 toMain = navController::navigateToMain,
+                toLogin = {
+                    // 先进入主页，再打开登录首页（与 Android Compose 版一致）
+                    navController.navigateToMain()
+                    navController.navigateToLoginHome()
+                },
             )
 
             // ── 主界面（底部 Tab）────────────────────────────────────────────

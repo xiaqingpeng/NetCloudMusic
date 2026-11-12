@@ -13,5 +13,5 @@ data class Cart(
     val stock: Stock? = null,
     val stockId: String? = null,
     val update: Boolean = false,
-    val selected: Boolean = true,
+    val selected: Boolean = false,
 )

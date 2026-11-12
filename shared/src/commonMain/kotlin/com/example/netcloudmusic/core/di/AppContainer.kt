@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.netcloudmusic.core.data.local.createDataStore
 import com.example.netcloudmusic.core.data.repository.AddressRepository
+import com.example.netcloudmusic.core.data.repository.AppPreferenceRepository
 import com.example.netcloudmusic.core.data.repository.CartRepository
 import com.example.netcloudmusic.core.data.repository.CityRepository
 import com.example.netcloudmusic.core.data.repository.GithubRepository
@@ -39,6 +40,7 @@ class AppContainer(
     val commonRepository: com.example.netcloudmusic.core.data.repository.CommonRepository = com.example.netcloudmusic.core.data.repository.CommonRepository(networkDataSource)
     val cartRepository: CartRepository = CartRepository(networkDataSource)
     val themeRepository: ThemeRepository = ThemeRepository(dataStore)
+    val appPreferenceRepository: AppPreferenceRepository = AppPreferenceRepository(dataStore)
     val addressRepository: AddressRepository = AddressRepository(networkDataSource)
     val meRepository: MeRepository = MeRepository()
     val cityRepository: CityRepository = CityRepository(cityDatabase.cityDao())

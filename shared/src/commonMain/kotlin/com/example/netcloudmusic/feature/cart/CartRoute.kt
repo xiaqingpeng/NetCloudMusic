@@ -58,7 +58,7 @@ fun CartRoute(
         ) {
             Text("加载中...")
         }
-    } else if (datum.isEmpty()) {
+    } else if (datum.isEmpty() && !viewModel.shouldDisplayUndoRemove) {
         // 空购物车提示
         Box(
             modifier = Modifier

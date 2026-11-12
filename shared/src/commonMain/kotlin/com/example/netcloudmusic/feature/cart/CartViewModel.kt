@@ -58,6 +58,7 @@ class CartViewModel(
 
     var shouldDisplayUndoRemove by mutableStateOf(false)
     private var lastRemoveCartIds: List<String>? = null
+    private var lastRemovedCartSnapshot: List<Cart>? = null
 
     fun loadData() {
         viewModelScope.launch {
@@ -65,7 +66,9 @@ class CartViewModel(
             try {
                 val response = cartRepository.cartsSync()
                 if (response.isSucceeded) {
-                    _datum.value = response.data?.list ?: emptyList()
+                    _datum.value = response.data?.list
+                        ?.map { it.copy(selected = false) }
+                        ?: emptyList()
                 }
             } catch (e: Exception) {
                 // 失败时保持当前列表不变
@@ -114,8 +117,11 @@ class CartViewModel(
     }
 
     private fun prepareDeleteByIds(ids: List<String>) {
-        shouldDisplayUndoRemove = true
+        if (ids.isEmpty() || shouldDisplayUndoRemove) return
+
         lastRemoveCartIds = ids
+        lastRemovedCartSnapshot = _datum.value.filter { it.id in ids }
+        shouldDisplayUndoRemove = true
         // 乐观更新：先从本地列表移除，等用户确认后再请求服务端
         _datum.value = _datum.value.filter { it.id !in ids }
     }
@@ -125,13 +131,24 @@ class CartViewModel(
             try {
                 val response = cartRepository.deleteCartsSync(ids)
                 if (response.isSucceeded) {
-                    toggleEditingModel()
+                    clearUndoState()
+                    isEditing.value = false
                     loadData()
+                } else {
+                    restoreLastRemovedItems()
                 }
             } catch (e: Exception) {
-                // 失败时不做处理，乐观更新已生效
+                restoreLastRemovedItems()
             }
         }
+    }
+
+    private fun restoreLastRemovedItems() {
+        lastRemovedCartSnapshot?.let { removedItems ->
+            val currentIds = _datum.value.mapNotNull { it.id }.toSet()
+            _datum.value += removedItems.filter { it.id !in currentIds }
+        }
+        clearUndoState()
     }
 
     fun selectedCartIds(): List<String> =
@@ -142,20 +159,20 @@ class CartViewModel(
     }
 
     fun undoCartRemoval() {
-        clearUndoState()
-        toggleEditingModel()
+        restoreLastRemovedItems()
+        isEditing.value = false
         loadData()
     }
 
     fun confirmDeleteByIds() {
-        lastRemoveCartIds?.let {
-            deleteByIds(it)
-            clearUndoState()
-        }
+        val ids = lastRemoveCartIds ?: return
+        shouldDisplayUndoRemove = false
+        deleteByIds(ids)
     }
 
     fun clearUndoState() {
         shouldDisplayUndoRemove = false
         lastRemoveCartIds = null
+        lastRemovedCartSnapshot = null
     }
 }
