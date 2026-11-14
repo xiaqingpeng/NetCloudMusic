@@ -65,6 +65,7 @@ import netcloudmusic.shared.generated.resources.login_or_register
 import netcloudmusic.shared.generated.resources.me_fans
 import netcloudmusic.shared.generated.resources.me_friend
 import netcloudmusic.shared.generated.resources.me_login_tip
+import netcloudmusic.shared.generated.resources.scan
 import netcloudmusic.shared.generated.resources.unknown_user
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -81,6 +82,8 @@ fun MeRoute(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
 ) {
     val viewModel: MeViewModel = viewModel(
         factory = viewModelFactory {
@@ -112,6 +115,8 @@ fun MeRoute(
                 toLogin()
             }
         },
+        toScan = toScan,
+        toCode = toCode,
         orderButtons = viewModel.getOrderButtons(),
         serviceButtons = viewModel.getMoreServiceButtons(),
     )
@@ -129,6 +134,8 @@ fun MeScreen(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
     orderButtons: List<OrderButtonItem> = emptyList(),
     serviceButtons: List<ButtonControl> = emptyList(),
 ) {
@@ -142,23 +149,18 @@ fun MeScreen(
                     containerColor = MaterialTheme.colorScheme.primary,
                     actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
-//                actions = {
-//                    // 扫码功能（暂未实现）
-//                    IconButton(onClick = { /* TODO: 扫码 */ }) {
-//                        Icon(
-//                            imageVector = Icons.Default.QrCode,
-//                            contentDescription = null,
-//                            tint = Color.White,
-//                        )
-//                    }
-//                    IconButton(onClick = toSettings) {
-//                        Icon(
-//                            imageVector = Icons.Default.Settings,
-//                            contentDescription = stringResource(Res.string.settings),
-//                            tint = Color.White,
-//                        )
-//                    }
-//                },
+                actions = {
+                    Image(
+                        painter = painterResource(Res.drawable.scan),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(horizontal = SpaceExtraOuter)
+                            .size(42.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = toScan)
+                    )
+                },
             )
         },
         // 排除底部导航栏内边距，与 Compose 版一致
@@ -183,6 +185,7 @@ fun MeScreen(
                     MeUserProfile(
                         user = state.user,
                         toProfile = if (state.user.style == 20) toGithubProfile else toProfile,
+                        toCode = toCode,
                     )
                 } else {
                     MeDefaultProfile(toLogin = toLogin)
@@ -232,7 +235,7 @@ fun MeScreen(
 
 /** 已登录：头像 + 昵称 + 扫码 + 箭头，点击跳转个人资料 */
 @Composable
-private fun MeUserProfile(user: User, toProfile: () -> Unit) {
+private fun MeUserProfile(user: User, toProfile: () -> Unit, toCode: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -264,8 +267,8 @@ private fun MeUserProfile(user: User, toProfile: () -> Unit) {
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
-        IconButton(onClick = { /* TODO: 扫码 */ }) {
-            Icon(Icons.Default.QrCode, contentDescription = null, tint = Color.White)
+        IconButton(onClick = toCode) {
+            Icon(Icons.Default.QrCode, contentDescription = "我的二维码", tint = Color.White)
         }
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,

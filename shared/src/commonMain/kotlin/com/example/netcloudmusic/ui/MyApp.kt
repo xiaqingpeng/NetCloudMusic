@@ -5,6 +5,8 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
@@ -13,6 +15,7 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import com.example.netcloudmusic.core.data.repository.ThemeMode
 import com.example.netcloudmusic.core.di.AppContainerProvider
 import com.example.netcloudmusic.core.util.Constant
+import com.example.netcloudmusic.core.util.rememberExternalUrlOpener
 import com.example.netcloudmusic.feature.about.navigation.aboutScreen
 import com.example.netcloudmusic.feature.about.navigation.navigateToAbout
 import com.example.netcloudmusic.feature.address.AddressRefreshBus
@@ -25,6 +28,10 @@ import com.example.netcloudmusic.feature.categorydetail.navigation.categoryDetai
 import com.example.netcloudmusic.feature.categorydetail.navigation.navigateToCategoryDetail
 import com.example.netcloudmusic.feature.codelogin.navigation.codeLoginScreen
 import com.example.netcloudmusic.feature.codelogin.navigation.navigateToCodeLogin
+import com.example.netcloudmusic.feature.code.navigation.codeScreen
+import com.example.netcloudmusic.feature.code.navigation.navigateToCode
+import com.example.netcloudmusic.feature.scan.navigation.navigateToScan
+import com.example.netcloudmusic.feature.scan.navigation.scanScreen
 import com.example.netcloudmusic.feature.confirmorder.navigation.ConfirmOrderParam
 import com.example.netcloudmusic.feature.confirmorder.navigation.confirmOrderScreen
 import com.example.netcloudmusic.feature.confirmorder.navigation.navigateToConfirmOrder
@@ -91,6 +98,7 @@ fun MyApp() {
         initial = ThemeMode.SYSTEM
     )
 
+    val openUrl = rememberExternalUrlOpener()
     AppTheme(themeMode = themeMode) {
         val navController = rememberNavController()
 
@@ -127,6 +135,8 @@ fun MyApp() {
                 toReceivingAddress = navController::navigateToAddress,
                 toAbout = navController::navigateToAbout,
                 toOrder = { style -> navController.navigateToOrder(style) },
+                toScan = navController::navigateToScan,
+                toCode = navController::navigateToCode,
                 toConfirmOrder = { cartIds ->
                     navController.navigateToConfirmOrder(
                         ConfirmOrderParam(carts = cartIds)
@@ -159,6 +169,17 @@ fun MyApp() {
                 toBack = { navController.popBackStack() },
                 onSuccess = { navController.popBackStack() },
             )
+
+            scanScreen(
+                toBack = { navController.popBackStack() },
+                onScanResult = { value ->
+                    navController.popBackStack()
+                    if (value.startsWith("http", ignoreCase = true)) {
+                        openUrl(value)
+                    }
+                },
+            )
+            codeScreen(toBack = { navController.popBackStack() })
 
             // ── 用户模块 ──────────────────────────────────────────────────────
             profileScreen(

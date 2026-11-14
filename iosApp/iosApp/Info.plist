@@ -4,5 +4,11 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>需要使用相机来拍照和扫描二维码</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>需要访问照片库来保存拍摄的照片</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>需要访问照片库来读取和保存图片</string>
 </dict>
 </plist>

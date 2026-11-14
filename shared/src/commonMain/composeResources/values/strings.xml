@@ -151,6 +151,7 @@
     <string name="error_password_format">密码格式不正确（6-20位字母数字组合）</string>
     <string name="error_password_confirm_empty">请再次输入密码</string>
     <string name="error_password_not_match">两次输入的密码不一致</string>
+    <string name="hint_scan_my_code">扫一扫，添加我为好友</string>
     
     <!-- Discovery 页面 -->
     <string name="pull_up_load_more">上拉加载更多</string>

@@ -26,7 +26,7 @@ class OrderDetailViewModel(
             try {
                 val response = orderRepository.orderDetailSync(orderId)
                 if (response.isSucceeded && response.data != null) {
-                    _uiState.value = OrderDetailUiState.Success(response.data!!)
+                    _uiState.value = OrderDetailUiState.Success(response.data)
                 } else {
                     _uiState.value = OrderDetailUiState.Error(response.message ?: "加载失败")
                 }

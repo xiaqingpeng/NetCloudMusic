@@ -50,6 +50,8 @@ fun MainRoute(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
     toConfirmOrder: (List<String>) -> Unit = {},
     viewModel: MainViewModel = viewModel(
         factory = viewModelFactory {
@@ -70,6 +72,8 @@ fun MainRoute(
         toReceivingAddress = toReceivingAddress,
         toAbout = toAbout,
         toOrder = toOrder,
+        toScan = toScan,
+        toCode = toCode,
         toConfirmOrder = toConfirmOrder,
     )
 }
@@ -86,6 +90,8 @@ fun MainScreen(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
     toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     var currentDestination by remember { mutableStateOf(TopLevelDestination.DISCOVERY.route) }
@@ -157,6 +163,8 @@ fun MainScreen(
                 toReceivingAddress = toReceivingAddress,
                 toAbout = toAbout,
                 toOrder = toOrder,
+                toScan = toScan,
+                toCode = toCode,
                 toConfirmOrder = toConfirmOrder,
             )
             MyNavigationBar(
@@ -186,6 +194,8 @@ fun MainContent(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
     toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     HorizontalPager(state = pagerState, modifier = modifier.fillMaxWidth()) {
@@ -208,6 +218,8 @@ fun MainContent(
                 toReceivingAddress = toReceivingAddress,
                 toAbout = toAbout,
                 toOrder = toOrder,
+                toScan = toScan,
+                toCode = toCode,
             )
             else -> Unit
         }

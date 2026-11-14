@@ -131,4 +131,5 @@
     <string name="payment_before">Please complete payment before %1$s</string>
     <string name="shipped_hint">Your package is on its way to you</string>
     <string name="other_order_status">Other order status</string>
+    <string name="hint_scan_my_code">Scan to add me as a friend</string>
 </resources>

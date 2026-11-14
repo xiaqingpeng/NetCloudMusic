@@ -52,6 +52,10 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
+            implementation(libs.kamera)
+            implementation(libs.kamera.qr.scanner)
+            implementation(libs.kamera.image.saver)
+            implementation(libs.qrose)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)

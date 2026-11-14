@@ -19,8 +19,11 @@ fun NavController.navigateToMe() {
 /**
  * 配置导航
  */
-fun NavGraphBuilder.meScreen() {
+fun NavGraphBuilder.meScreen(
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
+) {
     myComposable(route = ME_ROUTE) {
-        MeRoute()
+        MeRoute(toScan = toScan, toCode = toCode)
     }
 }

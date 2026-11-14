@@ -27,6 +27,8 @@ fun NavGraphBuilder.mainScreen(
     toReceivingAddress: () -> Unit = {},
     toAbout: () -> Unit = {},
     toOrder: (Int) -> Unit = {},
+    toScan: () -> Unit = {},
+    toCode: () -> Unit = {},
     toConfirmOrder: (List<String>) -> Unit = {},
 ) {
     myComposable(route = MAIN_ROUTE) {
@@ -40,6 +42,8 @@ fun NavGraphBuilder.mainScreen(
             toReceivingAddress = toReceivingAddress,
             toAbout = toAbout,
             toOrder = toOrder,
+            toScan = toScan,
+            toCode = toCode,
             toConfirmOrder = toConfirmOrder,
         )
     }
